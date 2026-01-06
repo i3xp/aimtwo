@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AIM2: SNIPER OPS - TACTICAL</title>
+    <title>AIM2: SNIPER OPS - DAYLIGHT</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&display=swap');
-        /* --- THEME: TACTICAL --- */
+        /* --- THEME: DAYLIGHT TACTICAL --- */
         :root { 
-            --bg: #0a0a0a; 
-            --panel: #1a1a1a; 
+            --bg: #87CEEB; /* Sky Blue */
+            --panel: rgba(255, 255, 255, 0.95); 
             --accent: #ff9d00; /* Amber */
-            --text: #e0e0e0;
-            --danger: #ff3333;
+            --text: #1a1a1a;
+            --danger: #d63031;
+            --ui-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         body { 
             margin: 0; overflow: hidden; background: var(--bg); color: var(--text);
@@ -21,97 +22,136 @@
         /* --- LAYOUT --- */
         #game-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
-        #menu-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at center, #222 0%, #000 100%); }
+        #menu-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at center, #dbe9f4 0%, #87CEEB 100%); }
         
         /* --- MENUS --- */
         .panel {
-            background: var(--panel); border: 1px solid #333; padding: 40px;
-            width: 420px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.9);
-            border-radius: 2px; border-top: 3px solid var(--accent);
-            backdrop-filter: blur(5px);
+            background: var(--panel); border: 1px solid #ccc; padding: 40px;
+            width: 420px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            border-radius: 4px; border-top: 4px solid var(--accent);
+            backdrop-filter: blur(10px);
+            color: #222;
         }
-        h1 { margin: 0 0 20px 0; color: var(--accent); font-size: 2.5rem; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 10px rgba(255, 157, 0, 0.3); }
-        h2 { margin: 0 0 20px 0; font-size: 1.5rem; color: #fff; text-transform: uppercase; letter-spacing: 2px; }
+        h1 { margin: 0 0 20px 0; color: var(--accent); font-size: 2.2rem; text-transform: uppercase; letter-spacing: 3px; text-shadow: none; }
+        h2 { margin: 0 0 20px 0; font-size: 1.5rem; color: #333; text-transform: uppercase; letter-spacing: 2px; }
                 
         input { 
-            width: 100%; padding: 14px; background: #0f0f0f; border: 1px solid #333; 
-            color: white; font-family: inherit; font-size: 1.1rem; text-align: center; 
+            width: 100%; padding: 14px; background: #f0f0f0; border: 1px solid #bbb; 
+            color: #222; font-family: inherit; font-size: 1.1rem; text-align: center; 
             margin-bottom: 15px; outline: none; box-sizing: border-box; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;
+            border-radius: 4px;
         } 
         input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 157, 0, 0.2); }
+        input[readonly] { background: #e0e0e0; color: #555; cursor: default; }
         
         button { 
-            width: 100%; padding: 14px; cursor: pointer; background: #2a2a2a; color: #ccc; 
-            border: 1px solid #333; font-family: inherit; font-size: 1rem; font-weight: bold; 
+            width: 100%; padding: 14px; cursor: pointer; background: #f0f0f0; color: #222; 
+            border: 1px solid #bbb; font-family: inherit; font-size: 1rem; font-weight: bold; 
             text-transform: uppercase; transition: 0.2s; margin-bottom: 10px; letter-spacing: 1px;
+            border-radius: 4px;
         } 
-        button:hover { background: var(--accent); color: #000; border-color: var(--accent); transform: translateY(-1px); }
-        button:disabled { opacity: 0.3; cursor: not-allowed; transform: none; border-color: #333; background: #1a1a1a; }
+        button:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(255,157,0,0.3); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; border-color: #bbb; background: #eee; color: #999; }
                 
-        .btn-red { background: #2a1010; color: #ff8888; border-color: #500; }
-        .btn-red:hover { background: #d63031; color: white; border-color: #ff0000; }
+        .btn-red { background: #fff0f0; color: #d63031; border-color: #ffcccc; }
+        .btn-red:hover { background: #d63031; color: white; border-color: #d63031; }
 
         /* --- HUD --- */
         #hud { display: none; }
         
         .score-box {
-            position: absolute; top: 40px; font-size: 3rem; font-weight: bold;
-            padding: 0px 20px; background: rgba(0,0,0,0.6); border-bottom: 2px solid #444; font-variant-numeric: tabular-nums;
+            position: absolute; top: 40px; font-size: 1.8rem; font-weight: 700;
+            padding: 10px 20px; background: rgba(0,0,0,0.6); color: #fff;
+            border-radius: 4px; font-variant-numeric: tabular-nums;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+            border-left: 4px solid var(--accent);
         }
-        #score-p1 { left: 40px; border-left: 4px solid var(--accent); color: var(--accent); }
-        #score-p2 { right: 40px; border-right: 4px solid var(--danger); text-align: right; color: var(--danger); }
+        #score-p1 { left: 40px; text-align: left; }
+        #score-p2 { right: 40px; text-align: right; border-left: none; border-right: 4px solid var(--danger); }
                 
         #win-limit {
             position: absolute; top: 15px; width: 100%; text-align: center;
-            font-size: 0.8rem; color: #666; letter-spacing: 3px; text-transform: uppercase;
+            font-size: 0.9rem; color: #333; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; text-shadow: 0 1px 2px rgba(255,255,255,0.8);
         }
 
         #killfeed {
             position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 2rem; text-shadow: 0 4px 4px #000; text-align: center; color: #fff;
+            font-size: 2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); text-align: center; color: #fff;
             opacity: 0; transition: opacity 0.3s; font-weight: 700; pointer-events: none; white-space: nowrap;
         }
 
+        /* --- AMMO HUD --- */
+        #ammo-hud {
+            position: absolute; bottom: 40px; right: 40px;
+            font-size: 3rem; font-weight: bold; color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; align-items: flex-end;
+        }
+        #ammo-label { font-size: 1rem; opacity: 0.8; letter-spacing: 2px; margin-bottom: -5px;}
+        #reloading-text { color: #ff3333; font-size: 1.5rem; display: none; animation: blink 0.5s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
         /* --- CROSSHAIR & HIT MARKER --- */
-        #crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.6; pointer-events: none; }
-        .ch-line { position: absolute; background: #fff; box-shadow: 0 0 2px #000; }
-        .ch-v { width: 2px; height: 20px; left: 50%; top: 50%; transform: translate(-50%, -50%); } /* Dot style */
+        #crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.8; pointer-events: none; }
+        .ch-line { position: absolute; background: #000; box-shadow: 0 0 2px #fff; }
+        .ch-v { width: 2px; height: 20px; left: 50%; top: 50%; transform: translate(-50%, -50%); } 
         .ch-h { width: 20px; height: 2px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
 
         #hitmarker {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5);
             width: 40px; height: 40px; opacity: 0; transition: transform 0.1s, opacity 0.2s; pointer-events: none;
         }
-        .hm-line { position: absolute; background: var(--danger); width: 100%; height: 3px; top: 50%; left: 0; transform-origin: center; }
+        .hm-line { position: absolute; background: #fff; width: 100%; height: 3px; top: 50%; left: 0; transform-origin: center; }
         .hm-1 { transform: rotate(45deg); }
         .hm-2 { transform: rotate(-45deg); }
         .hit-active { opacity: 1 !important; transform: translate(-50%, -50%) scale(1.2) !important; }
 
-        /* --- SCOPE --- */
+        /* --- SCOPE (Optimized) --- */
         #scope {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; pointer-events: none;
         }
         .scope-overlay {
             width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 28%, #000 35%, #000 100%);
-            box-shadow: inset 0 0 100px #000;
+            /* Optimized gradient: simpler rendering */
+            background: radial-gradient(circle, transparent 25%, #000 30%, #000 100%);
         }
-        /* Heartbeat effect on scope */
-        .scope-pulse {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 50%; height: 50%; border: 1px solid rgba(255, 50, 50, 0.3); border-radius: 50%;
-            animation: pulse 2s infinite;
+        .scope-reticle { 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 90vh; height: 90vh; 
+            border: 1px solid rgba(0,0,0,0.2); border-radius: 50%; 
+            pointer-events: none; 
         }
-        @keyframes pulse { 0% { opacity: 0.2; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.05); } 100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1); } }
+        .scope-cross { position: absolute; background: rgba(0,0,0,0.3); }
+        .sc-v { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
+        .sc-h { top: 50%; left: 0; width: 100%; height: 1px; transform: translateY(-50%); }
         
-        .scope-reticle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vh; height: 100vh; border: 1px solid rgba(0,0,0,0.3); border-radius: 50%; pointer-events: none; }
-        .scope-data { position: absolute; color: #ff9d00; font-size: 16px; font-weight: bold; text-shadow: 1px 1px 0 #000; left: 52%; top: 54%; font-family: monospace; }
+        .scope-center-dot {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 4px; height: 4px; background: red; border-radius: 50%;
+            box-shadow: 0 0 5px rgba(255,0,0,0.5);
+        }
+        
+        .scope-data { 
+            position: absolute; color: #000; font-size: 14px; font-weight: bold; 
+            left: 52%; top: 54%; font-family: monospace; text-shadow: 0 0 2px rgba(255,255,255,0.5);
+        }
+
+        /* --- REMATCH PANEL --- */
+        #rematch-panel {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 200;
+            flex-direction: column; align-items: center; justify-content: center; pointer-events: auto;
+        }
+        #rematch-panel h2 { font-size: 3rem; margin-bottom: 20px; }
+        .win-txt { color: #00ffcc; }
+        .lose-txt { color: #ff3333; }
 
         /* --- TOAST NOTIFICATIONS --- */
-        #toast-container { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; pointer-events: none; z-index: 200; }
-        .toast { background: rgba(30, 30, 30, 0.9); border-left: 4px solid var(--accent); padding: 12px 24px; border-radius: 2px; color: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: slideUp 0.3s ease-out; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        #toast-container { position: absolute; top: 100px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; pointer-events: none; z-index: 300; }
+        .toast { background: rgba(0, 0, 0, 0.8); color: #fff; padding: 12px 24px; border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); animation: slideDown 0.3s ease-out; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; border-left: 4px solid var(--accent); }
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .hidden { display: none !important; }
     </style>
@@ -122,11 +162,20 @@
 
 <div id="ui-layer">
     <div id="hud">
-        <div id="win-limit">TARGET SCORE: 30</div>
-        <div id="score-p1" class="score-box">0</div>
-        <div id="score-p2" class="score-box">0</div>
+        <div id="win-limit">TARGET SCORE: <span id="target-score-display">30</span></div>
+        
+        <div id="score-p1" class="score-box">HOST: 0</div>
+        <div id="score-p2" class="score-box">GUEST: 0</div>
+        
         <div id="killfeed">ELIMINATED</div>
         
+        <!-- Ammo -->
+        <div id="ammo-hud">
+            <span id="ammo-label">AMMO</span>
+            <div id="ammo-count">5/5</div>
+            <div id="reloading-text">RELOADING...</div>
+        </div>
+
         <div id="crosshair">
             <div class="ch-line ch-v"></div>
             <div class="ch-line ch-h"></div>
@@ -138,14 +187,20 @@
         
         <div id="scope">
             <div class="scope-overlay"></div>
-            <div class="scope-pulse"></div>
             <div class="scope-reticle">
-                <div class="scope-cross sc-v" style="position:absolute; left:50%; top:0; width:1px; height:100%; background:rgba(0,0,0,0.5);"></div>
-                <div class="scope-cross sc-h" style="position:absolute; top:50%; left:0; width:100%; height:1px; background:rgba(0,0,0,0.5);"></div>
-                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:4px; height:4px; background:red; border-radius:50%;"></div>
+                <div class="scope-cross sc-v"></div>
+                <div class="scope-cross sc-h"></div>
+                <div class="scope-center-dot"></div>
             </div>
-            <div class="scope-data"><span id="dist-val">--</span>m <span style="color:#666">| AIM2</span></div>
+            <div class="scope-data"><span id="dist-val">--</span>m</div>
         </div>
+    </div>
+
+    <!-- Rematch Overlay -->
+    <div id="rematch-panel">
+        <h2 id="end-msg">GAME OVER</h2>
+        <button id="btn-rematch" style="width: 200px;">REQUEST REMATCH</button>
+        <div id="rematch-status" style="margin-top: 15px; color: #aaa; font-size: 0.9rem;">WAITING FOR OPPONENT...</div>
     </div>
 </div>
 
@@ -154,9 +209,9 @@
 <div id="menu-layer">
     <div id="panel-main" class="panel">
         <h1>SNIPER OPS</h1>
-        <div style="margin-bottom:15px; color:#888; font-size:0.9rem;">TACTICAL 1V1 SIMULATION</div>
+        <div style="margin-bottom:15px; color:#666; font-size:0.9rem;">TACTICAL DAYLIGHT OPS</div>
         <input type="text" id="inp-name" placeholder="OPERATOR NAME" maxlength="10">
-        <div style="margin-bottom:20px; font-size:0.8rem; color:#888; display: flex; justify-content: space-between; align-items:center;">
+        <div style="margin-bottom:20px; font-size:0.8rem; color:#666; display: flex; justify-content: space-between; align-items:center;">
             <span>ELIMINATION LIMIT:</span>
             <input type="number" id="inp-win-score" value="30" style="width:70px; margin:0; padding:8px;">
         </div>
@@ -164,15 +219,23 @@
         <button id="btn-join">JOIN MATCH</button>
         <div style="margin-top:25px; font-size: 0.75rem; color: #555; line-height: 1.6;">
             <span style="color:var(--accent)">WASD</span> MOVE &nbsp; <span style="color:var(--accent)">SHIFT</span> SPRINT<br>
-            <span style="color:var(--accent)">HOLD RMB</span> SCOPE &nbsp; <span style="color:var(--accent)">RELEASE RMB</span> FIRE
+            <span style="color:var(--accent)">HOLD RMB</span> SCOPE &nbsp; <span style="color:var(--accent)">R</span> RELOAD
         </div>
     </div>
 
     <div id="panel-host" class="panel hidden">
-        <h2>SECURE CHANNEL</h2>
-        <div style="margin-bottom:10px; color:#888; font-size:0.8rem;">FRIENDLY FREQUENCY</div>
+        <h2>LOBBY</h2>
+        <div style="margin-bottom:10px; color:#666; font-size:0.8rem;">ROOM CODE</div>
         <input type="text" id="host-code" readonly style="cursor:pointer; color:var(--accent); font-size:1.5rem; letter-spacing:2px; border-color:var(--accent);">
-        <div id="host-status" style="margin:20px 0; color:#666; font-weight:bold; min-height:20px;">WAITING FOR CONNECTION...</div>
+        
+        <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 4px;">
+            <div style="font-size:0.8rem; color:#888; margin-bottom:5px;">PLAYERS</div>
+            <div id="lobby-list" style="font-weight:bold; text-align:left; padding-left: 10px;">
+                <div id="lobby-host-name">HOST: ...</div>
+                <div id="lobby-client-name" style="color:#999;">WAITING FOR PLAYER...</div>
+            </div>
+        </div>
+
         <button id="btn-start" disabled>DEPLOY OPERATIVES</button>
         <button id="btn-back" class="btn-red">ABORT</button>
     </div>
@@ -191,21 +254,23 @@
 
 <script>
 /**
- * AIM2: SNIPER OPS
- * Features: Procedural Audio, Particle System, Weapon Sway, Laser Sight, Improved Physics
+ * AIM2: SNIPER OPS - DAYLIGHT EDITION
+ * Updates: Ammo System, Daytime Lighting, Optimized Scope, Lobby Names, Rematch
  */
 
 const CFG = { 
-    baseSpeed: 140, 
-    sprintSpeed: 190, 
+    baseSpeed: 160, 
+    sprintSpeed: 210, 
     jumpForce: 35, 
     gravity: 100, 
-    friction: 0.85,         
-    airControl: 0.25, 
+    friction: 0.9,         
+    airControl: 0.3, 
     sens: 0.002, 
     scopeSens: 0.0004, 
     tickRate: 30, 
-    winScore: 30 
+    winScore: 30,
+    maxAmmo: 5,
+    reloadTime: 2000 // ms
 };
 
 const State = { 
@@ -219,7 +284,9 @@ const State = {
         onGround: false, 
         scoped: false, 
         dead: false,
-        sprinting: false
+        sprinting: false,
+        ammo: CFG.maxAmmo,
+        reloading: false
     }, 
     headBobTimer: 0, 
     weaponSway: new THREE.Vector2(),
@@ -227,7 +294,8 @@ const State = {
     players: {}, 
     lastFrame: 0, 
     lastTick: 0, 
-    keys: {} 
+    keys: {},
+    score: { me: 0, enemy: 0 }
 };
 
 // --- AUDIO SYSTEM (Procedural) ---
@@ -236,9 +304,8 @@ const Sfx = {
     bufferNoise: null,
     init: () => { 
         if(!Sfx.ctx) Sfx.ctx = new (window.AudioContext||window.webkitAudioContext)();
-        // Create noise buffer once
         if(!Sfx.bufferNoise) {
-            const bufferSize = Sfx.ctx.sampleRate * 2; // 2 seconds
+            const bufferSize = Sfx.ctx.sampleRate * 2; 
             const buffer = Sfx.ctx.createBuffer(1, bufferSize, Sfx.ctx.sampleRate);
             const data = buffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
@@ -251,55 +318,66 @@ const Sfx = {
         const t = Sfx.ctx.currentTime; 
         
         if(type === 'shoot') { 
-            // Gunshot: Noise burst + Low decay
             const src = Sfx.ctx.createBufferSource();
             src.buffer = Sfx.bufferNoise;
             const gain = Sfx.ctx.createGain();
             const filter = Sfx.ctx.createBiquadFilter();
-            
             filter.type = 'lowpass';
             filter.frequency.setValueAtTime(1000, t);
-            filter.frequency.exponentialRampToValueAtTime(100, t + 0.3);
-            
-            gain.gain.setValueAtTime(0.5, t); 
-            gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3); 
-            
+            filter.frequency.exponentialRampToValueAtTime(100, t + 0.2);
+            gain.gain.setValueAtTime(0.4, t); 
+            gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2); 
             src.connect(filter); filter.connect(gain); gain.connect(Sfx.ctx.destination); 
-            src.start(t); src.stop(t+0.3);
+            src.start(t); src.stop(t+0.2);
         } else if (type === 'hit') { 
-            // Hit: High pitched ping
             const osc = Sfx.ctx.createOscillator(); 
             const gain = Sfx.ctx.createGain(); 
             osc.type = 'triangle'; 
-            osc.frequency.setValueAtTime(1500, t); 
-            osc.frequency.exponentialRampToValueAtTime(500, t + 0.1); 
-            gain.gain.setValueAtTime(0.2, t); 
+            osc.frequency.setValueAtTime(1200, t); 
+            osc.frequency.exponentialRampToValueAtTime(100, t + 0.1); 
+            gain.gain.setValueAtTime(0.3, t); 
             gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1); 
             osc.connect(gain); gain.connect(Sfx.ctx.destination); 
             osc.start(t); osc.stop(t+0.1); 
         } else if (type === 'step') {
-            // Footstep: Short low thud
             const osc = Sfx.ctx.createOscillator();
             const gain = Sfx.ctx.createGain();
             osc.type = 'sine';
             osc.frequency.setValueAtTime(80, t);
             osc.frequency.exponentialRampToValueAtTime(0.01, t + 0.1);
-            gain.gain.setValueAtTime(0.3, t);
+            gain.gain.setValueAtTime(0.2, t);
             gain.gain.linearRampToValueAtTime(0, t + 0.1);
             osc.connect(gain); gain.connect(Sfx.ctx.destination);
             osc.start(t); osc.stop(t+0.1);
-        } else if (type === 'wall') {
-            // Ricochet/Hit Wall: High transient
-            const src = Sfx.ctx.createBufferSource();
-            src.buffer = Sfx.bufferNoise;
+        } else if (type === 'reload') {
+            // Mechanical click sound
+            const osc = Sfx.ctx.createOscillator();
             const gain = Sfx.ctx.createGain();
-            const filter = Sfx.ctx.createBiquadFilter();
-            filter.type = 'highpass';
-            filter.frequency.value = 2000;
-            gain.gain.setValueAtTime(0.2, t);
-            gain.gain.exponentialRampToValueAtTime(0.01, t + 0.05);
-            src.connect(filter); filter.connect(gain); gain.connect(Sfx.ctx.destination);
-            src.start(t); src.stop(t+0.05);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(600, t);
+            gain.gain.setValueAtTime(0.1, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+            osc.connect(gain); gain.connect(Sfx.ctx.destination);
+            osc.start(t); osc.stop(t+0.05);
+            
+            // Second click
+            const osc2 = Sfx.ctx.createOscillator();
+            const gain2 = Sfx.ctx.createGain();
+            osc2.type = 'square';
+            osc2.frequency.setValueAtTime(800, t + 0.2);
+            gain2.gain.setValueAtTime(0.1, t + 0.2);
+            gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+            osc2.connect(gain2); gain2.connect(Sfx.ctx.destination);
+            osc2.start(t + 0.2); osc2.stop(t + 0.25);
+        } else if (type === 'empty') {
+            const osc = Sfx.ctx.createOscillator();
+            const gain = Sfx.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(800, t);
+            gain.gain.setValueAtTime(0.1, t);
+            gain.gain.linearRampToValueAtTime(0, t + 0.05);
+            osc.connect(gain); gain.connect(Sfx.ctx.destination);
+            osc.start(t); osc.stop(t+0.05);
         }
     } 
 };
@@ -308,36 +386,41 @@ const Sfx = {
 const Gfx = { 
     scene: null, camera: null, renderer: null, colliders: [],
     weaponGroup: null, laserLine: null,
-    particles: [], // Object pool for performance
-    
+    particles: [], 
+
     init: () => { 
         Gfx.scene = new THREE.Scene(); 
-        Gfx.scene.background = new THREE.Color(0x0a0a0a); 
-        Gfx.scene.fog = new THREE.Fog(0x0a0a0a, 10, 200); 
+        Gfx.scene.background = new THREE.Color(0x87CEEB); // Daytime Sky
+        // NO FOG for better performance and clear visibility
         
         Gfx.camera = new THREE.PerspectiveCamera(85, innerWidth/innerHeight, 0.1, 500); 
+        
+        // Optimized Renderer for low-end
         Gfx.renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" }); 
-        Gfx.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); 
+        Gfx.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.0)); // Cap at 1.0 for performance
         Gfx.renderer.setSize(innerWidth, innerHeight); 
         Gfx.renderer.shadowMap.enabled = true;
-        Gfx.renderer.shadowMap.type = THREE.BasicShadowMap;
+        Gfx.renderer.shadowMap.type = THREE.BasicShadowMap; // Cheaper shadowing
+        
         document.getElementById('game-layer').appendChild(Gfx.renderer.domElement); 
         
-        // Lighting
-        const amb = new THREE.AmbientLight(0xffffff, 0.4); 
+        // Brighter Lighting for Daytime
+        const amb = new THREE.AmbientLight(0xffffff, 0.8); 
         Gfx.scene.add(amb); 
-        const dir = new THREE.DirectionalLight(0xffaa00, 0.6); 
+        
+        const dir = new THREE.DirectionalLight(0xffffff, 0.8); 
         dir.position.set(50, 100, 50); 
         dir.castShadow = true;
-        dir.shadow.mapSize.width = 1024; dir.shadow.mapSize.height = 1024;
+        dir.shadow.mapSize.width = 512; // Lower res for performance
+        dir.shadow.mapSize.height = 512;
+        dir.shadow.camera.near = 0.5;
+        dir.shadow.camera.far = 300;
+        dir.shadow.camera.left = -100;
+        dir.shadow.camera.right = 100;
+        dir.shadow.camera.top = 100;
+        dir.shadow.camera.bottom = -100;
         Gfx.scene.add(dir); 
         
-        // Add a subtle blue rim light
-        const spot = new THREE.SpotLight(0x0088ff, 0.5);
-        spot.position.set(-50, 50, -50);
-        spot.lookAt(0,0,0);
-        Gfx.scene.add(spot);
-
         Gfx.buildMap(); 
         Gfx.buildWeapon();
     }, 
@@ -347,9 +430,9 @@ const Gfx = {
         const ctx = canvas.getContext('2d'); 
         canvas.width = 256; canvas.height = 64; 
         ctx.font = "Bold 40px 'Chakra Petch'"; 
-        ctx.fillStyle = "#ffffff"; 
+        ctx.fillStyle = "#000000"; // Black text for day visibility
         ctx.textAlign = "center"; 
-        ctx.shadowColor="black"; ctx.shadowBlur=4; 
+        ctx.shadowColor="white"; ctx.shadowBlur=2; 
         ctx.fillText(name, 128, 48); 
         const tex = new THREE.CanvasTexture(canvas); 
         const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true })); 
@@ -359,29 +442,25 @@ const Gfx = {
 
     buildWeapon: () => {
         Gfx.weaponGroup = new THREE.Group();
-        const matBlack = new THREE.MeshLambertMaterial({color: 0x111111});
-        const matDarkGrey = new THREE.MeshLambertMaterial({color: 0x333333});
-        const matAccent = new THREE.MeshBasicMaterial({color: 0xff9d00}); // Scope lens
+        const matBlack = new THREE.MeshLambertMaterial({color: 0x222222}); // Darker black for contrast
+        const matDarkGrey = new THREE.MeshLambertMaterial({color: 0x555555});
+        const matAccent = new THREE.MeshBasicMaterial({color: 0xff9d00}); 
 
         // Simple Sniper Construct
-        // Body
         const body = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.2, 1.2), matDarkGrey);
         body.position.set(0.2, -0.3, -0.5);
         Gfx.weaponGroup.add(body);
         
-        // Barrel
         const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.06, 1.5, 8), matBlack);
         barrel.rotation.x = Math.PI/2;
         barrel.position.set(0.2, -0.25, -1.3);
         Gfx.weaponGroup.add(barrel);
 
-        // Scope
         const scopeCyl = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.5, 12), matBlack);
         scopeCyl.rotation.z = Math.PI/2;
         scopeCyl.position.set(0.2, -0.1, -0.5);
         Gfx.weaponGroup.add(scopeCyl);
         
-        // Scope Lens (Glow)
         const lens = new THREE.Mesh(new THREE.CircleGeometry(0.05, 16), matAccent);
         lens.position.set(-0.05, -0.1, -0.5);
         lens.rotation.y = -Math.PI/2;
@@ -389,21 +468,19 @@ const Gfx = {
 
         // Laser Sight
         const laserGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,-100)]);
-        const laserMat = new THREE.LineBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.6 });
+        const laserMat = new THREE.LineBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
         Gfx.laserLine = new THREE.Line(laserGeo, laserMat);
         Gfx.laserLine.position.set(0.2, -0.3, -2.0);
         Gfx.laserLine.visible = false;
         Gfx.weaponGroup.add(Gfx.laserLine);
 
-        // Attach to camera but later we will manually render it in the loop or add to scene
-        // Actually, for weapon sway, we should add it to the camera or manually update position every frame relative to camera
         Gfx.camera.add(Gfx.weaponGroup);
         Gfx.scene.add(Gfx.camera);
     },
 
     buildMap: () => { 
-        const matFloor = new THREE.MeshLambertMaterial({color: 0x1a1a1a}); 
-        const matWall = new THREE.MeshLambertMaterial({color: 0x2a2a2a}); 
+        const matFloor = new THREE.MeshLambertMaterial({color: 0x909090}); // Grey concrete
+        const matWall = new THREE.MeshLambertMaterial({color: 0xdddddd}); // White walls
         const matTrim = new THREE.MeshBasicMaterial({color: 0xff9d00}); 
         
         // Floor
@@ -426,9 +503,9 @@ const Gfx = {
         createBox(10, 40, 200, -100, 20, 0, matWall); 
         createBox(10, 40, 200, 100, 20, 0, matWall); 
 
-        // Center Structure (Sniper nest)
+        // Center Structure
         createBox(20, 15, 20, 0, 7.5, 0, matWall); 
-        createBox(22, 1, 22, 0, 15.1, 0, matTrim); // Roof trim
+        createBox(22, 1, 22, 0, 15.1, 0, matTrim); 
         
         // Floating Platforms
         createBox(15, 1, 15, 40, 10, 40, matWall);
@@ -448,8 +525,7 @@ const Gfx = {
 
     createPlayer: () => { 
         const g = new THREE.Group(); 
-        // Hitbox
-        const b = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.9, 1.0), new THREE.MeshLambertMaterial({color: 0x444444})); 
+        const b = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.9, 1.0), new THREE.MeshLambertMaterial({color: 0x333333})); 
         b.position.y = 0.95; 
         b.castShadow = true;
         const h = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), new THREE.MeshLambertMaterial({color: 0xcc3333})); 
@@ -464,7 +540,6 @@ const Gfx = {
         return g; 
     }, 
 
-    // Particle System
     spawnParticles: (pos, color, count, speed) => {
         const geo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
         const mat = new THREE.MeshBasicMaterial({color: color});
@@ -472,7 +547,6 @@ const Gfx = {
         for(let i=0; i<count; i++) {
             const mesh = new THREE.Mesh(geo, mat);
             mesh.position.copy(pos);
-            // Random spread
             mesh.position.x += (Math.random() - 0.5) * 0.5;
             mesh.position.y += (Math.random() - 0.5) * 0.5;
             mesh.position.z += (Math.random() - 0.5) * 0.5;
@@ -491,7 +565,7 @@ const Gfx = {
     updateParticles: (dt) => {
         for(let i = Gfx.particles.length - 1; i >= 0; i--) {
             const p = Gfx.particles[i];
-            p.life -= dt * 2.0; // Fade speed
+            p.life -= dt * 2.0; 
             p.mesh.position.addScaledVector(p.vel, dt * 5);
             p.mesh.rotation.x += dt * 5;
             p.mesh.scale.setScalar(p.life);
@@ -507,11 +581,10 @@ const Gfx = {
     tracer: (start, end) => { 
         const pts = [start, end]; 
         const geo = new THREE.BufferGeometry().setFromPoints(pts); 
-        const mat = new THREE.LineBasicMaterial({ color: 0xffaa00, linewidth: 2 }); 
+        const mat = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 }); // Black tracer for day
         const line = new THREE.Line(geo, mat); 
         Gfx.scene.add(line); 
-        // Add particles at hit point
-        Gfx.spawnParticles(end, 0xffaa00, 5, 2); // Sparks
+        Gfx.spawnParticles(end, 0xffaa00, 5, 2); 
         setTimeout(() => { Gfx.scene.remove(line); geo.dispose(); mat.dispose(); }, 50); 
     } 
 }; 
@@ -528,16 +601,17 @@ const Net = {
             if(role === 'host') { 
                 State.isHost = true; 
                 CFG.winScore = parseInt(document.getElementById('inp-win-score').value) || 30; 
-                document.getElementById('win-limit').innerText = `TARGET SCORE: ${CFG.winScore}`; 
+                document.getElementById('target-score-display').innerText = CFG.winScore;
                 document.getElementById('host-code').value = id; 
+                
+                // Update lobby UI immediately
+                document.getElementById('lobby-host-name').innerText = "HOST: " + State.myName;
+
                 UI.showPanel('panel-host');
                 
                 State.peer.on('connection', conn => { 
                     State.conn = conn; 
                     Net.setup(); 
-                    document.getElementById('host-status').innerText = "LINK ESTABLISHED"; 
-                    document.getElementById('host-status').style.color = "#00ffcc"; 
-                    document.getElementById('btn-start').disabled = false; 
                 }); 
             } else { 
                 const code = document.getElementById('inp-code').value; 
@@ -550,23 +624,39 @@ const Net = {
         
         State.peer.on('error', err => {
             console.error(err);
-            UI.toast("NETWORK ERROR: " + err.type, "error");
+            UI.toast("NETWORK ERROR", "error");
             if(role === 'client') document.getElementById('btn-connect').innerText = "RETRY";
         });
     }, 
     
     setup: () => { 
         State.conn.on('open', () => { 
+            // Send name immediately
             State.conn.send({ t:'name', n: State.myName }); 
-            if(!State.isHost) document.getElementById('panel-join').innerHTML = "<h2>LINK ESTABLISHED</h2><div style='color:#00ffcc; margin-top:20px'>WAITING FOR HOST...</div>"; 
+            
+            if(State.isHost) {
+                document.getElementById('btn-start').disabled = false;
+                document.getElementById('btn-start').innerText = "DEPLOY OPERATIVES";
+            } else {
+                document.getElementById('panel-join').innerHTML = "<h2>CONNECTED</h2><div style='color:#00aa00; margin-top:20px'>WAITING FOR HOST TO START...</div>";
+            }
         }); 
         
         State.conn.on('data', data => { 
             switch(data.t) { 
-                case 'name': State.enemyName = data.n; break; 
+                case 'name': 
+                    State.enemyName = data.n; 
+                    if(State.isHost) {
+                        // Host sees client join
+                        document.getElementById('lobby-client-name').innerText = "GUEST: " + State.enemyName;
+                        document.getElementById('lobby-client-name').style.color = "#000";
+                        document.getElementById('lobby-client-name').style.fontWeight = "bold";
+                        UI.toast(State.enemyName + " JOINED ROOM");
+                    }
+                    break; 
                 case 'start': 
                     CFG.winScore = data.ws; 
-                    document.getElementById('win-limit').innerText = `TARGET SCORE: ${CFG.winScore}`; 
+                    document.getElementById('target-score-display').innerText = CFG.winScore; 
                     UI.startGame(); 
                     break; 
                 case 'm': 
@@ -580,17 +670,19 @@ const Net = {
                 case 's': 
                     Gfx.tracer(data.o, data.d); 
                     Sfx.play('shoot'); 
-                    // Visual feedback of enemy shooting (flash)
                     if(State.players['enemy'] && State.players['enemy'].mesh) {
-                        const flash = new THREE.PointLight(0xffaa00, 1, 10);
+                        const flash = new THREE.PointLight(0xffaa00, 0.5, 10);
                         flash.position.copy(data.o);
                         Gfx.scene.add(flash);
                         setTimeout(() => Gfx.scene.remove(flash), 50);
                     }
                     break; 
                 case 'hit': if(!State.me.dead && !State.gameOver) Logic.die(); break; 
-                case 'u': UI.updateScore(data.h, data.c); break; 
-                case 'win': Logic.endGame(data.w); break; 
+                case 'rematch': 
+                    // Received request to start rematch
+                    UI.toast("OPPONENT REQUESTED REMATCH");
+                    Logic.resetGame(); 
+                    break;
             } 
         }); 
         
@@ -629,24 +721,48 @@ const UI = {
         c.appendChild(el);
         setTimeout(() => {
             el.style.opacity = 0;
-            el.style.transform = 'translateY(20px)';
+            el.style.transform = 'translateY(-20px)';
             setTimeout(() => el.remove(), 300);
         }, 3000);
     },
     startGame: () => { 
         document.getElementById('menu-layer').classList.add('hidden'); 
         document.getElementById('hud').style.display = 'block'; 
+        document.getElementById('rematch-panel').style.display = 'none';
         State.playing = true; 
+        State.gameOver = false;
         document.body.requestPointerLock(); 
+        
+        // Init Score Names
+        UI.updateScoreNames();
+        UI.updateAmmo();
+        
         Logic.spawn(); 
         UI.toast("MATCH STARTED - GOOD LUCK");
     }, 
-    updateScore: (h, c) => { 
-        const myScore = State.isHost ? h : c; 
-        const enScore = State.isHost ? c : h; 
-        document.getElementById('score-p1').innerText = myScore; 
-        document.getElementById('score-p2').innerText = enScore; 
+    updateScoreNames: () => {
+        document.getElementById('score-p1').innerText = `${State.myName}: 0`;
+        document.getElementById('score-p2').innerText = `${State.enemyName}: 0`;
+    },
+    updateScore: () => { 
+        // Uses local State.score to update UI text
+        const p1 = State.score.me;
+        const p2 = State.score.enemy;
+        document.getElementById('score-p1').innerText = `${State.myName}: ${p1}`;
+        document.getElementById('score-p2').innerText = `${State.enemyName}: ${p2}`;
     }, 
+    updateAmmo: () => {
+        document.getElementById('ammo-count').innerText = `${State.me.ammo}/${CFG.maxAmmo}`;
+        if(State.me.reloading) {
+            document.getElementById('ammo-count').style.display = 'none';
+            document.getElementById('reloading-text').style.display = 'block';
+        } else {
+            document.getElementById('ammo-count').style.display = 'block';
+            document.getElementById('reloading-text').style.display = 'none';
+            if(State.me.ammo === 0) document.getElementById('ammo-count').style.color = '#ff3333';
+            else document.getElementById('ammo-count').style.color = '#fff';
+        }
+    },
     feed: (text) => { 
         if(State.gameOver) return; 
         const el = document.getElementById('killfeed'); 
@@ -672,7 +788,7 @@ const Logic = {
             if(!State.gameOver) Logic.physics(dt); 
                         
             const p = State.players['enemy']; 
-            if(p && p.mesh) p.mesh.position.lerp(p.targetPos, 0.2); // Smoother lerp
+            if(p && p.mesh) p.mesh.position.lerp(p.targetPos, 0.2); 
             
             Gfx.updateParticles(dt);
             Gfx.renderer.render(Gfx.scene, Gfx.camera); 
@@ -692,19 +808,35 @@ const Logic = {
         State.me.onGround = false; 
         State.me.dead = false; 
         State.me.scoped = false; 
+        State.me.ammo = CFG.maxAmmo;
+        State.me.reloading = false;
+        State.recoil = 0;
+        UI.updateAmmo();
         document.getElementById('scope').style.display = 'none'; 
         document.getElementById('crosshair').style.display = 'block'; 
         Gfx.laserLine.visible = false;
     }, 
     
+    reload: () => {
+        if(State.me.reloading || State.me.ammo === CFG.maxAmmo) return;
+        State.me.reloading = true;
+        UI.updateAmmo();
+        Sfx.play('reload');
+        
+        setTimeout(() => {
+            State.me.ammo = CFG.maxAmmo;
+            State.me.reloading = false;
+            UI.updateAmmo();
+        }, CFG.reloadTime);
+    },
+    
     physics: (dt) => { 
         if(State.me.dead) return; 
         const { me, keys } = State; 
         
-        // Sprint Logic
         const inputVec = new THREE.Vector3((keys['KeyD']?1:0)-(keys['KeyA']?1:0), 0, (keys['KeyS']?1:0)-(keys['KeyW']?1:0));
         const isMoving = inputVec.lengthSq() > 0;
-        const isSprinting = keys['ShiftLeft'] && keys['KeyW'] && !me.scoped && isMoving;
+        const isSprinting = keys['ShiftLeft'] && keys['KeyW'] && !me.scoped && isMoving && !me.reloading;
         const speed = isSprinting ? CFG.sprintSpeed : CFG.baseSpeed; 
         
         const fwd = new THREE.Vector3(0,0,-1).applyAxisAngle(new THREE.Vector3(0,1,0), me.rot.y); 
@@ -719,19 +851,16 @@ const Logic = {
         const accel = speed * dt * (me.onGround ? 1.0 : CFG.airControl); 
         if(inputDir.length() > 0) me.vel.add(inputDir.multiplyScalar(accel)); 
         
-        // Friction
         const friction = me.onGround ? CFG.friction : 0.98; 
         me.vel.x *= friction; me.vel.z *= friction; 
         
         if(keys['Space'] && me.onGround) { me.vel.y = CFG.jumpForce; me.onGround = false; } 
         me.vel.y -= CFG.gravity * dt; 
         
-        // Collision 
         const resolve = (axis) => { 
             const nextPos = me.pos.clone(); 
             if(axis === 'x') nextPos.x += me.vel.x * dt; 
             if(axis === 'z') nextPos.z += me.vel.z * dt; 
-            
             const pBox = new THREE.Box3().setFromCenterAndSize( 
                 nextPos.clone().add(new THREE.Vector3(0, 1.5, 0)), 
                 new THREE.Vector3(1.0, 3, 1.0) 
@@ -748,7 +877,6 @@ const Logic = {
         
         me.pos.y += me.vel.y * dt; 
         
-        // Map boundaries / Death floor
         if(me.pos.y < -60) Logic.die(); 
         if(me.pos.y <= 0) { 
             me.pos.y = 0; 
@@ -766,79 +894,68 @@ const Logic = {
             } else { me.onGround = false; } 
         } 
 
-        // Camera / Weapon Sway
         let camY = me.pos.y + 2.4; 
         
-        // Head bob & Weapon Sway calculations
         const time = performance.now() * 0.001;
         let bobX = 0, bobY = 0;
         
-        if(me.onGround && isMoving) {
+        if(me.onGround && isMoving && !me.scoped) {
             const bobFreq = isSprinting ? 15 : 10;
             const bobAmp = isSprinting ? 0.08 : 0.04;
             State.headBobTimer += dt * bobFreq;
             bobY = Math.sin(State.headBobTimer) * bobAmp;
             bobX = Math.cos(State.headBobTimer * 0.5) * bobAmp;
             
-            // Footsteps (Procedural Audio)
             if(Math.abs(Math.sin(State.headBobTimer)) > 0.9 && (State.headBobTimer % 2 > 1)) {
-                // Simple debounce to prevent overlapping sounds
                 if(State.lastStepTime === undefined || time - State.lastStepTime > 0.3) {
                     Sfx.play('step');
                     State.lastStepTime = time;
                 }
             }
         } else {
-            // Idle breathing
             State.weaponSway.x = Math.sin(time) * 0.003;
             State.weaponSway.y = Math.cos(time * 0.8) * 0.003;
         }
 
-        // Apply Weapon Recoil Recovery
         if(State.recoil > 0) State.recoil = Math.max(0, State.recoil - dt * 5);
 
-        // Final Camera Position
         Gfx.camera.position.set(me.pos.x, camY + bobY, me.pos.z); 
         Gfx.camera.rotation.set(me.rot.x + State.recoil, me.rot.y, 0, 'YXZ'); 
 
-        // Update Weapon Transform (offset from camera)
         if(Gfx.weaponGroup) {
-            const basePos = new THREE.Vector3(0.3, -0.3 + bobY, -0.5 + (isSprinting ? -0.2 : 0)); // Sprint brings gun closer
+            const basePos = new THREE.Vector3(0.3, -0.3 + bobY, -0.5 + (isSprinting ? -0.2 : 0)); 
             const sway = new THREE.Vector2(bobX, bobY);
             
             Gfx.weaponGroup.position.copy(basePos);
             Gfx.weaponGroup.position.x += sway.x;
-            
-            // Recoil kickback
             Gfx.weaponGroup.position.z += State.recoil * 0.5;
-            Gfx.weaponGroup.rotation.x = State.recoil; // Pitch up
-            Gfx.weaponGroup.rotation.y = -sway.x; // Bank slightly
+            Gfx.weaponGroup.rotation.x = State.recoil; 
+            Gfx.weaponGroup.rotation.y = -sway.x; 
+            
+            // Reload Animation (Weapon tilt)
+            if(me.reloading) {
+                Gfx.weaponGroup.rotation.x = -Math.PI/4;
+                Gfx.weaponGroup.position.y -= 0.2;
+            }
         }
 
-        // Scope Zoom
         const baseFov = 85; 
         const targetFov = me.scoped ? 15 : (isSprinting ? 95 : baseFov); 
-        Gfx.camera.fov += (targetFov - Gfx.camera.fov) * 0.15; 
+        Gfx.camera.fov += (targetFov - Gfx.camera.fov) * 0.3; // Faster transition for "smoothness"
         Gfx.camera.updateProjectionMatrix(); 
         
-        // Laser Sight Update
         if(me.scoped && Gfx.laserLine) {
             Gfx.laserLine.visible = true;
-            // Raycast for laser endpoint
             const laserRay = new THREE.Raycaster(Gfx.camera.position, Gfx.camera.getWorldDirection(new THREE.Vector3()));
             const hits = laserRay.intersectObjects([...Gfx.colliders, State.players['enemy']?.mesh].filter(x=>x));
             if(hits.length > 0) {
-                // Scale the line to the hit point (distance)
-                // The line geometry is from 0,0,0 to 0,0,-100. We scale Z.
                 const dist = hits[0].distance;
-                // Simple scaling of the line mesh
                 Gfx.laserLine.scale.z = dist / 100;
             }
         } else if(Gfx.laserLine) {
             Gfx.laserLine.visible = false;
         }
 
-        // UI Data
         if(me.scoped) { 
             const p = State.players['enemy']; 
             if(p && p.mesh) { 
@@ -849,10 +966,18 @@ const Logic = {
     }, 
     
     shoot: () => { 
-        if(State.me.dead || State.gameOver) return; 
-        Sfx.play('shoot'); 
+        if(State.me.dead || State.gameOver || State.me.reloading) return; 
         
-        // Recoil
+        if(State.me.ammo <= 0) {
+            Sfx.play('empty');
+            UI.toast("PRESS R TO RELOAD", "error");
+            return;
+        }
+
+        State.me.ammo--;
+        UI.updateAmmo();
+        
+        Sfx.play('shoot'); 
         State.recoil = 0.1;
         
         const ray = new THREE.Raycaster(); 
@@ -872,7 +997,6 @@ const Logic = {
         if(hits.length > 0) { 
             let hitEnemy = false; 
             let obj = hits[0].object; 
-            // Traverse up to find group root
             while(obj.parent && obj.parent.type !== 'Scene') { 
                 if(obj.parent === p.mesh) { hitEnemy = true; break; } 
                 obj = obj.parent; 
@@ -880,27 +1004,26 @@ const Logic = {
             
             if(hitEnemy) { 
                 Sfx.play('hit'); 
-                Gfx.spawnParticles(hits[0].point, 0xff0000, 10, 4); // Blood
+                Gfx.spawnParticles(hits[0].point, 0xff0000, 10, 4); 
                 UI.showHitMarker();
                 UI.feed(`HIT ${State.enemyName}`); 
                 State.conn.send({ t:'hit' }); 
                 Logic.onScore(); 
             } else {
-                Sfx.play('wall'); // Ricochet
+                // Sfx.play('wall'); 
             }
         } 
     }, 
     
     onScore: () => { 
-        let p1 = parseInt(document.getElementById('score-p1').innerText); 
-        let p2 = parseInt(document.getElementById('score-p2').innerText); 
-        if(State.isHost) p1++; else p2++; 
-        UI.updateScore(p1, p2); 
-        State.conn.send({ t:'u', h: p1, c: p2 }); 
-        if( (State.isHost && p1 >= CFG.winScore) || (!State.isHost && p2 >= CFG.winScore) ) { 
-            Logic.endGame("VICTORY"); 
-            State.conn.send({ t:'win', w: "DEFEAT" }); 
-        } 
+        State.score.me++; 
+        UI.updateScore(); 
+        
+        // Check Win
+        if(State.score.me >= CFG.winScore) { 
+            Logic.endGame(true); 
+            State.conn.send({ t:'win' }); // Tell enemy they lost
+        }
     }, 
     
     die: () => { 
@@ -910,28 +1033,69 @@ const Logic = {
         setTimeout(() => Logic.spawn(), 2500); 
     }, 
     
-    endGame: (msg) => { 
+    endGame: (iWon) => { 
         State.gameOver = true; 
         document.exitPointerLock(); 
         const feed = document.getElementById('killfeed'); 
-        feed.innerText = msg + "\nREFRESH TO RESET"; 
-        feed.style.opacity = 1; 
-        feed.style.fontSize = "4rem"; 
-        feed.style.color = msg === "VICTORY" ? "#00ffcc" : "#ff3333"; 
-        document.getElementById('scope').style.display = 'none';
-    } 
+        feed.style.opacity = 0; 
+        
+        const panel = document.getElementById('rematch-panel');
+        const msg = document.getElementById('end-msg');
+        const btn = document.getElementById('btn-rematch');
+        const status = document.getElementById('rematch-status');
+        
+        panel.style.display = 'flex';
+        panel.style.pointerEvents = 'auto';
+        
+        if(iWon) {
+            msg.innerText = "VICTORY";
+            msg.className = "win-txt";
+        } else {
+            msg.innerText = "DEFEAT";
+            msg.className = "lose-txt";
+        }
+        
+        status.innerText = "WAITING FOR OPPONENT...";
+        btn.innerText = "REQUEST REMATCH";
+        btn.disabled = false;
+        btn.onclick = () => {
+            btn.innerText = "WAITING...";
+            btn.disabled = true;
+            status.innerText = "REQUEST SENT";
+            State.conn.send({ t: 'rematch' });
+        };
+    },
+
+    resetGame: () => {
+        // Reset scores and state
+        State.score.me = 0;
+        State.score.enemy = 0;
+        State.gameOver = false;
+        UI.updateScore();
+        
+        document.getElementById('rematch-panel').style.display = 'none';
+        document.getElementById('rematch-panel').style.pointerEvents = 'none';
+        
+        // Respawn
+        Logic.spawn();
+        document.body.requestPointerLock();
+    }
 }; 
 
 window.onload = () => { 
     Gfx.init(); 
     Logic.loop(0); 
-    window.onkeydown = e => State.keys[e.code] = true; 
+    window.onkeydown = e => { 
+        State.keys[e.code] = true; 
+        if(e.code === 'KeyR' && State.playing && !State.gameOver && !State.me.dead) Logic.reload();
+    }; 
     window.onkeyup = e => State.keys[e.code] = false; 
     
-    // Input Handling 
     window.onmousedown = e => { 
         if(document.pointerLockElement !== document.body) { 
-            if(State.playing && !State.gameOver) document.body.requestPointerLock(); 
+            if(State.playing && !State.gameOver && document.getElementById('rematch-panel').style.display === 'none') {
+                document.body.requestPointerLock(); 
+            }
             return; 
         } 
         if(e.button === 2) { 
