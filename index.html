@@ -3,98 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AIM2: SNIPER OPS - DAYLIGHT</title>
+    <title>AIM2: SNIPER OPS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Chakra+Petch:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&display=swap');
-        /* --- THEME: DAYLIGHT TACTICAL --- */
+        /* --- THEME: DARK TACTICAL UI --- */
         :root { 
-            --bg: #87CEEB; /* Sky Blue */
-            --panel: rgba(255, 255, 255, 0.95); 
+            --bg-ui: #050505; 
+            --panel: rgba(10, 10, 10, 0.95); 
+            --panel-border: #333;
             --accent: #ff9d00; /* Amber */
-            --text: #1a1a1a;
+            --text: #e0e0e0;
             --danger: #d63031;
-            --ui-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --hud-bg: rgba(0, 0, 0, 0.7);
+            --input-bg: #1a1a1a;
+            --font-main: 'Black Ops One', cursive;
+            --font-ui: 'Chakra Petch', sans-serif;
         }
+
         body { 
-            margin: 0; overflow: hidden; background: var(--bg); color: var(--text);
-            font-family: 'Chakra Petch', sans-serif; user-select: none; 
+            margin: 0; overflow: hidden; background: #000; color: var(--text);
+            font-family: var(--font-ui); user-select: none; -webkit-user-select: none;
+            touch-action: none; /* Prevent browser zooming/scrolling */
         }
+
         /* --- LAYOUT --- */
         #game-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
-        #menu-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at center, #dbe9f4 0%, #87CEEB 100%); }
         
-        /* --- MENUS --- */
-        .panel {
-            background: var(--panel); border: 1px solid #ccc; padding: 40px;
-            width: 420px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-            border-radius: 4px; border-top: 4px solid var(--accent);
-            backdrop-filter: blur(10px);
-            color: #222;
+        /* --- MOBILE CONTROLS --- */
+        #mobile-controls {
+            display: none; /* Hidden on desktop by default, shown via JS detection */
+            position: absolute; bottom: 20px; width: 100%; height: 200px; z-index: 50;
+            pointer-events: auto;
         }
-        h1 { margin: 0 0 20px 0; color: var(--accent); font-size: 2.2rem; text-transform: uppercase; letter-spacing: 3px; text-shadow: none; }
-        h2 { margin: 0 0 20px 0; font-size: 1.5rem; color: #333; text-transform: uppercase; letter-spacing: 2px; }
+
+        #joystick-area {
+            position: absolute; bottom: 20px; left: 30px; width: 140px; height: 140px;
+            background: rgba(255, 255, 255, 0.1); border-radius: 50%; border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        #joystick-knob {
+            position: absolute; top: 50%; left: 50%; width: 50px; height: 50px;
+            background: rgba(255, 157, 0, 0.8); border-radius: 50%;
+            transform: translate(-50%, -50%); box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        #sprint-toggle {
+            position: absolute; bottom: 170px; left: 50px;
+            width: 100px; height: 40px;
+            background: rgba(0,0,0,0.6); border: 1px solid var(--accent);
+            color: var(--accent); font-size: 0.8rem; font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 4px; text-transform: uppercase; letter-spacing: 1px;
+            transition: 0.2s;
+        }
+        #sprint-toggle.active { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent); }
+
+        #scope-btn {
+            position: absolute; bottom: 40px; right: 40px; width: 120px; height: 120px;
+            background: rgba(0,0,0,0.6); border: 2px solid rgba(255,255,255,0.3); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-family: var(--font-main); font-size: 1.2rem; letter-spacing: 1px;
+            transition: 0.1s;
+        }
+        #scope-btn:active { background: var(--accent); color: #000; transform: scale(0.95); }
+
+        /* --- MENUS --- */
+        #menu-layer { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #050505 0%, #111 100%);
+        }
+
+        .panel {
+            background: var(--panel); border: 1px solid var(--panel-border); 
+            padding: 30px; width: 90%; max-width: 450px; text-align: center; 
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            border-radius: 2px; 
+            border-top: 4px solid var(--accent);
+            position: relative;
+        }
+        
+        /* Decorative corners for custom look */
+        .panel::after {
+            content: ''; position: absolute; bottom: 0; right: 0; width: 20px; height: 20px;
+            border-bottom: 4px solid var(--accent); border-right: 4px solid var(--accent);
+        }
+
+        h1 { 
+            font-family: var(--font-main); margin: 0 0 10px 0; 
+            color: var(--accent); font-size: 2.5rem; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,157,0,0.3);
+        }
+        h2 { 
+            font-family: var(--font-main); margin: 0 0 20px 0; font-size: 1.8rem; color: #fff; letter-spacing: 2px; 
+        }
                 
         input { 
-            width: 100%; padding: 14px; background: #f0f0f0; border: 1px solid #bbb; 
-            color: #222; font-family: inherit; font-size: 1.1rem; text-align: center; 
-            margin-bottom: 15px; outline: none; box-sizing: border-box; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;
-            border-radius: 4px;
+            width: 100%; padding: 15px; background: var(--input-bg); border: 1px solid #444; 
+            color: #fff; font-family: var(--font-ui); font-size: 1rem; text-align: center; 
+            margin-bottom: 15px; outline: none; box-sizing: border-box; transition: 0.3s; 
+            text-transform: uppercase; letter-spacing: 1.5px; border-radius: 2px;
         } 
-        input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 157, 0, 0.2); }
-        input[readonly] { background: #e0e0e0; color: #555; cursor: default; }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(255, 157, 0, 0.2); background: #222; }
+        input[readonly] { color: var(--accent); font-family: monospace; font-size: 1.4rem; letter-spacing: 3px; border-color: var(--accent); background: #0f0f0f; }
         
         button { 
-            width: 100%; padding: 14px; cursor: pointer; background: #f0f0f0; color: #222; 
-            border: 1px solid #bbb; font-family: inherit; font-size: 1rem; font-weight: bold; 
-            text-transform: uppercase; transition: 0.2s; margin-bottom: 10px; letter-spacing: 1px;
-            border-radius: 4px;
+            width: 100%; padding: 15px; cursor: pointer; background: #1a1a1a; color: var(--accent); 
+            border: 1px solid var(--accent); font-family: var(--font-main); font-size: 1.1rem; 
+            text-transform: uppercase; transition: 0.2s; margin-bottom: 12px; letter-spacing: 1px;
+            border-radius: 2px; position: relative; overflow: hidden;
         } 
-        button:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(255,157,0,0.3); }
-        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; border-color: #bbb; background: #eee; color: #999; }
+        button:hover { background: var(--accent); color: #000; box-shadow: 0 0 20px rgba(255,157,0,0.4); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; border-color: #333; color: #555; background: #111; box-shadow: none; }
                 
-        .btn-red { background: #fff0f0; color: #d63031; border-color: #ffcccc; }
-        .btn-red:hover { background: #d63031; color: white; border-color: #d63031; }
+        .btn-red { border-color: var(--danger); color: var(--danger); background: #1a0505; }
+        .btn-red:hover { background: var(--danger); color: white; box-shadow: 0 0 20px rgba(214, 48, 49, 0.4); }
+
+        /* --- FOOTER --- */
+        .footer {
+            margin-top: 20px; font-size: 0.8rem; color: #666; font-family: var(--font-ui);
+        }
+        .footer a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent); transition: 0.2s;}
+        .footer a:hover { color: #fff; border-color: #fff; }
 
         /* --- HUD --- */
-        #hud { display: none; }
+        #hud { display: none; width: 100%; height: 100%; pointer-events: none; }
         
         .score-box {
-            position: absolute; top: 40px; font-size: 1.8rem; font-weight: 700;
-            padding: 10px 20px; background: rgba(0,0,0,0.6); color: #fff;
-            border-radius: 4px; font-variant-numeric: tabular-nums;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            position: absolute; top: 30px; font-family: var(--font-main); font-size: 1.5rem;
+            padding: 10px 20px; background: var(--hud-bg); color: #fff;
+            border-radius: 2px; font-variant-numeric: tabular-nums;
+            border: 1px solid #333;
             text-transform: uppercase;
-            border-left: 4px solid var(--accent);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-        #score-p1 { left: 40px; text-align: left; }
-        #score-p2 { right: 40px; text-align: right; border-left: none; border-right: 4px solid var(--danger); }
+        #score-p1 { left: 20px; text-align: left; border-left: 4px solid var(--accent); }
+        #score-p2 { right: 20px; text-align: right; border-right: 4px solid var(--danger); }
                 
         #win-limit {
-            position: absolute; top: 15px; width: 100%; text-align: center;
-            font-size: 0.9rem; color: #333; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+            position: absolute; top: 10px; width: 100%; text-align: center;
+            font-family: var(--font-ui); font-size: 0.8rem; color: #aaa; letter-spacing: 2px; text-transform: uppercase;
         }
 
         #killfeed {
             position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); text-align: center; color: #fff;
-            opacity: 0; transition: opacity 0.3s; font-weight: 700; pointer-events: none; white-space: nowrap;
+            font-family: var(--font-main); font-size: 2.5rem; text-shadow: 0 4px 8px #000; text-align: center; color: var(--accent);
+            opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; z-index: 5;
         }
 
         /* --- AMMO HUD --- */
         #ammo-hud {
-            position: absolute; bottom: 40px; right: 40px;
-            font-size: 3rem; font-weight: bold; color: #fff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column; align-items: flex-end;
+            position: absolute; bottom: 30px; right: 30px;
+            font-family: var(--font-main); font-size: 2.5rem; color: #fff; text-align: right;
+            text-shadow: 0 2px 4px #000;
         }
-        #ammo-label { font-size: 1rem; opacity: 0.8; letter-spacing: 2px; margin-bottom: -5px;}
-        #reloading-text { color: #ff3333; font-size: 1.5rem; display: none; animation: blink 0.5s infinite; }
+        #ammo-label { font-family: var(--font-ui); font-size: 0.8rem; color: #aaa; display: block; margin-bottom: 5px;}
+        #reloading-text { color: var(--danger); font-size: 1.2rem; display: none; animation: blink 0.5s infinite; margin-top:5px; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* --- CROSSHAIR & HIT MARKER --- */
+        /* --- SCOPE --- */
         #crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.8; pointer-events: none; }
-        .ch-line { position: absolute; background: #000; box-shadow: 0 0 2px #fff; }
+        .ch-line { position: absolute; background: #fff; box-shadow: 0 0 2px #000; }
         .ch-v { width: 2px; height: 20px; left: 50%; top: 50%; transform: translate(-50%, -50%); } 
         .ch-h { width: 20px; height: 2px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
 
@@ -107,53 +176,59 @@
         .hm-2 { transform: rotate(-45deg); }
         .hit-active { opacity: 1 !important; transform: translate(-50%, -50%) scale(1.2) !important; }
 
-        /* --- SCOPE (Optimized) --- */
+        /* Daytime Scope Styles */
         #scope {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden; pointer-events: none;
+            overflow: hidden; pointer-events: none; z-index: 20;
         }
         .scope-overlay {
             width: 100%; height: 100%;
-            /* Optimized gradient: simpler rendering */
-            background: radial-gradient(circle, transparent 25%, #000 30%, #000 100%);
+            background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.6) 32%, #000 100%);
         }
         .scope-reticle { 
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
             width: 90vh; height: 90vh; 
-            border: 1px solid rgba(0,0,0,0.2); border-radius: 50%; 
+            border: 1px solid rgba(0,0,0,0.5); border-radius: 50%; 
             pointer-events: none; 
         }
-        .scope-cross { position: absolute; background: rgba(0,0,0,0.3); }
+        .scope-cross { position: absolute; background: #000; }
         .sc-v { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
         .sc-h { top: 50%; left: 0; width: 100%; height: 1px; transform: translateY(-50%); }
-        
         .scope-center-dot {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 4px; height: 4px; background: red; border-radius: 50%;
-            box-shadow: 0 0 5px rgba(255,0,0,0.5);
+            box-shadow: 0 0 4px red;
         }
-        
         .scope-data { 
             position: absolute; color: #000; font-size: 14px; font-weight: bold; 
-            left: 52%; top: 54%; font-family: monospace; text-shadow: 0 0 2px rgba(255,255,255,0.5);
+            left: 52%; top: 54%; font-family: monospace; text-shadow: 0 0 2px rgba(255,255,255,0.8);
         }
 
         /* --- REMATCH PANEL --- */
         #rematch-panel {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); z-index: 200;
+            background: rgba(0,0,0,0.85); z-index: 200;
             flex-direction: column; align-items: center; justify-content: center; pointer-events: auto;
         }
-        #rematch-panel h2 { font-size: 3rem; margin-bottom: 20px; }
-        .win-txt { color: #00ffcc; }
-        .lose-txt { color: #ff3333; }
+        #rematch-panel h2 { font-family: var(--font-main); font-size: 3rem; margin-bottom: 20px; text-shadow: 0 0 20px currentColor; }
+        .win-txt { color: #00ffcc; text-shadow: 0 0 20px #00ffcc; }
+        .lose-txt { color: #ff3333; text-shadow: 0 0 20px #ff3333; }
 
         /* --- TOAST NOTIFICATIONS --- */
-        #toast-container { position: absolute; top: 100px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; pointer-events: none; z-index: 300; }
-        .toast { background: rgba(0, 0, 0, 0.8); color: #fff; padding: 12px 24px; border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); animation: slideDown 0.3s ease-out; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; border-left: 4px solid var(--accent); }
+        #toast-container { position: absolute; top: 100px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; pointer-events: none; z-index: 300; width: 80%; max-width: 400px; }
+        .toast { background: rgba(0, 0, 0, 0.9); color: #fff; padding: 12px 24px; border-radius: 2px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: slideDown 0.3s ease-out; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; border-left: 4px solid var(--accent); text-align: center; }
         @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .hidden { display: none !important; }
+        
+        /* Mobile Only CSS */
+        @media (hover: none) and (pointer: coarse) {
+            #mobile-controls { display: block; }
+            #score-p1, #score-p2 { top: 10px; font-size: 1.2rem; padding: 5px 10px; }
+            #killfeed { font-size: 1.8rem; top: 25%; }
+            #ammo-hud { bottom: 100px; right: 170px; } /* Move ammo so it doesn't cover mobile buttons */
+            #btn-rematch { width: 250px; }
+        }
     </style>
 </head>
 <body>
@@ -164,8 +239,8 @@
     <div id="hud">
         <div id="win-limit">TARGET SCORE: <span id="target-score-display">30</span></div>
         
-        <div id="score-p1" class="score-box">HOST: 0</div>
-        <div id="score-p2" class="score-box">GUEST: 0</div>
+        <div id="score-p1" class="score-box">YOU: 0</div>
+        <div id="score-p2" class="score-box">ENEMY: 0</div>
         
         <div id="killfeed">ELIMINATED</div>
         
@@ -196,11 +271,18 @@
         </div>
     </div>
 
+    <!-- Mobile Controls -->
+    <div id="mobile-controls">
+        <div id="joystick-area"><div id="joystick-knob"></div></div>
+        <div id="sprint-toggle">SPRINT</div>
+        <div id="scope-btn">SCOPE</div>
+    </div>
+
     <!-- Rematch Overlay -->
     <div id="rematch-panel">
         <h2 id="end-msg">GAME OVER</h2>
-        <button id="btn-rematch" style="width: 200px;">REQUEST REMATCH</button>
-        <div id="rematch-status" style="margin-top: 15px; color: #aaa; font-size: 0.9rem;">WAITING FOR OPPONENT...</div>
+        <button id="btn-rematch">REQUEST REMATCH</button>
+        <div id="rematch-status" style="margin-top: 15px; color: #aaa; font-size: 0.9rem; font-family: var(--font-ui);">WAITING FOR OPPONENT...</div>
     </div>
 </div>
 
@@ -209,42 +291,42 @@
 <div id="menu-layer">
     <div id="panel-main" class="panel">
         <h1>SNIPER OPS</h1>
-        <div style="margin-bottom:15px; color:#666; font-size:0.9rem;">TACTICAL DAYLIGHT OPS</div>
-        <input type="text" id="inp-name" placeholder="OPERATOR NAME" maxlength="10">
-        <div style="margin-bottom:20px; font-size:0.8rem; color:#666; display: flex; justify-content: space-between; align-items:center;">
-            <span>ELIMINATION LIMIT:</span>
-            <input type="number" id="inp-win-score" value="30" style="width:70px; margin:0; padding:8px;">
+        <div style="margin-bottom:20px; color:#888; font-size:0.9rem; letter-spacing:1px;">TACTICAL DAYLIGHT OPERATIONS</div>
+        <input type="text" id="inp-name" placeholder="OPERATOR NAME" maxlength="12">
+        <div style="margin-bottom:20px; font-size:0.8rem; color:#888; display: flex; justify-content: space-between; align-items:center;">
+            <span>KILL LIMIT:</span>
+            <input type="number" id="inp-win-score" value="30" style="width:70px; margin:0; padding:10px;">
         </div>
         <button id="btn-host">HOST MATCH</button>
         <button id="btn-join">JOIN MATCH</button>
-        <div style="margin-top:25px; font-size: 0.75rem; color: #555; line-height: 1.6;">
-            <span style="color:var(--accent)">WASD</span> MOVE &nbsp; <span style="color:var(--accent)">SHIFT</span> SPRINT<br>
-            <span style="color:var(--accent)">HOLD RMB</span> SCOPE &nbsp; <span style="color:var(--accent)">R</span> RELOAD
+        
+        <div class="footer">
+            Join our <a href="https://discord.gg/ZCG4hB2HHp" target="_blank">Discord Server</a>
         </div>
     </div>
 
     <div id="panel-host" class="panel hidden">
         <h2>LOBBY</h2>
-        <div style="margin-bottom:10px; color:#666; font-size:0.8rem;">ROOM CODE</div>
-        <input type="text" id="host-code" readonly style="cursor:pointer; color:var(--accent); font-size:1.5rem; letter-spacing:2px; border-color:var(--accent);">
+        <div style="margin-bottom:10px; color:#888; font-size:0.8rem; letter-spacing:1px;">ROOM CODE</div>
+        <input type="text" id="host-code" readonly style="cursor:pointer; color:var(--accent); font-size:1.4rem; letter-spacing:2px; border-color:var(--accent);">
         
-        <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 4px;">
-            <div style="font-size:0.8rem; color:#888; margin-bottom:5px;">PLAYERS</div>
-            <div id="lobby-list" style="font-weight:bold; text-align:left; padding-left: 10px;">
-                <div id="lobby-host-name">HOST: ...</div>
-                <div id="lobby-client-name" style="color:#999;">WAITING FOR PLAYER...</div>
+        <div style="margin: 20px 0; padding: 15px; background: #151515; border: 1px solid #333; border-radius: 2px;">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px; letter-spacing:1px;">OPERATIVES</div>
+            <div id="lobby-list" style="font-weight:bold; text-align:left; padding-left: 10px; font-family: var(--font-ui);">
+                <div id="lobby-host-name" style="color:var(--accent);">HOST: ...</div>
+                <div id="lobby-client-name" style="color:#444; margin-top:5px;">WAITING FOR PLAYER...</div>
             </div>
         </div>
 
-        <button id="btn-start" disabled>DEPLOY OPERATIVES</button>
-        <button id="btn-back" class="btn-red">ABORT</button>
+        <button id="btn-start" disabled>DEPLOY</button>
+        <button id="btn-back" class="btn-red">EXIT</button>
     </div>
 
     <div id="panel-join" class="panel hidden">
-        <h2>ENTER FREQUENCY</h2>
-        <input type="text" id="inp-code" placeholder="ENTER HOST CODE">
-        <button id="btn-connect">ESTABLISH LINK</button>
-        <div id="client-status" style="margin-top:15px; color:#666; font-size:0.8rem; min-height:20px;"></div>
+        <h2>JOIN ROOM</h2>
+        <input type="text" id="inp-code" placeholder="ENTER ROOM CODE">
+        <button id="btn-connect">CONNECT</button>
+        <div id="client-status" style="margin-top:15px; color:#888; font-size:0.8rem; min-height:20px;"></div>
         <button id="btn-back-2" class="btn-red">BACK</button>
     </div>
 </div>
@@ -255,7 +337,7 @@
 <script>
 /**
  * AIM2: SNIPER OPS - DAYLIGHT EDITION
- * Updates: Ammo System, Daytime Lighting, Optimized Scope, Lobby Names, Rematch
+ * Updates: Dark UI, Mobile Controls, Score Sync, Smooth Graphics
  */
 
 const CFG = { 
@@ -270,7 +352,8 @@ const CFG = {
     tickRate: 30, 
     winScore: 30,
     maxAmmo: 5,
-    reloadTime: 2000 // ms
+    reloadTime: 2000, // ms
+    isMobile: ('ontouchstart' in window) || (navigator.maxTouchPoints > 0)
 };
 
 const State = { 
@@ -295,7 +378,8 @@ const State = {
     lastFrame: 0, 
     lastTick: 0, 
     keys: {},
-    score: { me: 0, enemy: 0 }
+    score: { me: 0, enemy: 0 },
+    mobileSprint: false
 };
 
 // --- AUDIO SYSTEM (Procedural) ---
@@ -350,7 +434,6 @@ const Sfx = {
             osc.connect(gain); gain.connect(Sfx.ctx.destination);
             osc.start(t); osc.stop(t+0.1);
         } else if (type === 'reload') {
-            // Mechanical click sound
             const osc = Sfx.ctx.createOscillator();
             const gain = Sfx.ctx.createGain();
             osc.type = 'square';
@@ -360,7 +443,6 @@ const Sfx = {
             osc.connect(gain); gain.connect(Sfx.ctx.destination);
             osc.start(t); osc.stop(t+0.05);
             
-            // Second click
             const osc2 = Sfx.ctx.createOscillator();
             const gain2 = Sfx.ctx.createGain();
             osc2.type = 'square';
@@ -390,17 +472,23 @@ const Gfx = {
 
     init: () => { 
         Gfx.scene = new THREE.Scene(); 
-        Gfx.scene.background = new THREE.Color(0x87CEEB); // Daytime Sky
-        // NO FOG for better performance and clear visibility
+        Gfx.scene.background = new THREE.Color(0x87CEEB); // Daytime Sky (Kept as requested)
+        // NO FOG
         
         Gfx.camera = new THREE.PerspectiveCamera(85, innerWidth/innerHeight, 0.1, 500); 
         
-        // Optimized Renderer for low-end
-        Gfx.renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" }); 
-        Gfx.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.0)); // Cap at 1.0 for performance
+        // Optimized Renderer with Anti-aliasing enabled for smoother edges
+        Gfx.renderer = new THREE.WebGLRenderer({ 
+            antialias: true, // FIX: Pixelated edges
+            powerPreference: "high-performance" 
+        }); 
+        
+        // Cap pixel ratio to 2 for mobile to balance smoothness and performance
+        const dpr = CFG.isMobile ? Math.min(window.devicePixelRatio, 2) : Math.min(window.devicePixelRatio, 1.5);
+        Gfx.renderer.setPixelRatio(dpr); 
         Gfx.renderer.setSize(innerWidth, innerHeight); 
         Gfx.renderer.shadowMap.enabled = true;
-        Gfx.renderer.shadowMap.type = THREE.BasicShadowMap; // Cheaper shadowing
+        Gfx.renderer.shadowMap.type = THREE.BasicShadowMap; 
         
         document.getElementById('game-layer').appendChild(Gfx.renderer.domElement); 
         
@@ -411,8 +499,8 @@ const Gfx = {
         const dir = new THREE.DirectionalLight(0xffffff, 0.8); 
         dir.position.set(50, 100, 50); 
         dir.castShadow = true;
-        dir.shadow.mapSize.width = 512; // Lower res for performance
-        dir.shadow.mapSize.height = 512;
+        dir.shadow.mapSize.width = 1024; // Increased shadow res for better quality
+        dir.shadow.mapSize.height = 1024;
         dir.shadow.camera.near = 0.5;
         dir.shadow.camera.far = 300;
         dir.shadow.camera.left = -100;
@@ -429,10 +517,10 @@ const Gfx = {
         const canvas = document.createElement('canvas'); 
         const ctx = canvas.getContext('2d'); 
         canvas.width = 256; canvas.height = 64; 
-        ctx.font = "Bold 40px 'Chakra Petch'"; 
-        ctx.fillStyle = "#000000"; // Black text for day visibility
+        ctx.font = "Bold 40px 'Black Ops One'"; 
+        ctx.fillStyle = "#000000"; 
         ctx.textAlign = "center"; 
-        ctx.shadowColor="white"; ctx.shadowBlur=2; 
+        ctx.shadowColor="white"; ctx.shadowBlur=4; 
         ctx.fillText(name, 128, 48); 
         const tex = new THREE.CanvasTexture(canvas); 
         const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true })); 
@@ -442,7 +530,7 @@ const Gfx = {
 
     buildWeapon: () => {
         Gfx.weaponGroup = new THREE.Group();
-        const matBlack = new THREE.MeshLambertMaterial({color: 0x222222}); // Darker black for contrast
+        const matBlack = new THREE.MeshLambertMaterial({color: 0x222222});
         const matDarkGrey = new THREE.MeshLambertMaterial({color: 0x555555});
         const matAccent = new THREE.MeshBasicMaterial({color: 0xff9d00}); 
 
@@ -479,8 +567,8 @@ const Gfx = {
     },
 
     buildMap: () => { 
-        const matFloor = new THREE.MeshLambertMaterial({color: 0x909090}); // Grey concrete
-        const matWall = new THREE.MeshLambertMaterial({color: 0xdddddd}); // White walls
+        const matFloor = new THREE.MeshLambertMaterial({color: 0x999999}); 
+        const matWall = new THREE.MeshLambertMaterial({color: 0xdddddd}); 
         const matTrim = new THREE.MeshBasicMaterial({color: 0xff9d00}); 
         
         // Floor
@@ -581,7 +669,7 @@ const Gfx = {
     tracer: (start, end) => { 
         const pts = [start, end]; 
         const geo = new THREE.BufferGeometry().setFromPoints(pts); 
-        const mat = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 }); // Black tracer for day
+        const mat = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 }); 
         const line = new THREE.Line(geo, mat); 
         Gfx.scene.add(line); 
         Gfx.spawnParticles(end, 0xffaa00, 5, 2); 
@@ -594,7 +682,7 @@ const Net = {
     init: (role) => { 
         const n = document.getElementById('inp-name').value.trim(); 
         if(!n) return UI.toast("ENTER OPERATOR NAME", "error");
-        State.myName = n.substring(0,10).toUpperCase(); 
+        State.myName = n.substring(0,12).toUpperCase(); 
         State.peer = new Peer(); 
         
         State.peer.on('open', id => { 
@@ -604,7 +692,6 @@ const Net = {
                 document.getElementById('target-score-display').innerText = CFG.winScore;
                 document.getElementById('host-code').value = id; 
                 
-                // Update lobby UI immediately
                 document.getElementById('lobby-host-name').innerText = "HOST: " + State.myName;
 
                 UI.showPanel('panel-host');
@@ -615,7 +702,7 @@ const Net = {
                 }); 
             } else { 
                 const code = document.getElementById('inp-code').value; 
-                if(!code) return UI.toast("ENTER FREQUENCY CODE", "error");
+                if(!code) return UI.toast("ENTER ROOM CODE", "error");
                 document.getElementById('btn-connect').innerText = "CONNECTING..."; 
                 State.conn = State.peer.connect(code); 
                 Net.setup(); 
@@ -631,14 +718,13 @@ const Net = {
     
     setup: () => { 
         State.conn.on('open', () => { 
-            // Send name immediately
             State.conn.send({ t:'name', n: State.myName }); 
             
             if(State.isHost) {
                 document.getElementById('btn-start').disabled = false;
-                document.getElementById('btn-start').innerText = "DEPLOY OPERATIVES";
+                document.getElementById('btn-start').innerText = "DEPLOY";
             } else {
-                document.getElementById('panel-join').innerHTML = "<h2>CONNECTED</h2><div style='color:#00aa00; margin-top:20px'>WAITING FOR HOST TO START...</div>";
+                document.getElementById('panel-join').innerHTML = "<h2>CONNECTED</h2><div style='color:#00ffcc; margin-top:20px; font-size:1.2rem'>WAITING FOR HOST...</div>";
             }
         }); 
         
@@ -647,11 +733,9 @@ const Net = {
                 case 'name': 
                     State.enemyName = data.n; 
                     if(State.isHost) {
-                        // Host sees client join
                         document.getElementById('lobby-client-name').innerText = "GUEST: " + State.enemyName;
-                        document.getElementById('lobby-client-name').style.color = "#000";
-                        document.getElementById('lobby-client-name').style.fontWeight = "bold";
-                        UI.toast(State.enemyName + " JOINED ROOM");
+                        document.getElementById('lobby-client-name').style.color = "#fff";
+                        UI.toast(State.enemyName + " JOINED");
                     }
                     break; 
                 case 'start': 
@@ -677,9 +761,16 @@ const Net = {
                         setTimeout(() => Gfx.scene.remove(flash), 50);
                     }
                     break; 
-                case 'hit': if(!State.me.dead && !State.gameOver) Logic.die(); break; 
+                case 'hit': 
+                    // FIX: When I receive 'hit', it means I was shot.
+                    // Therefore, the ENEMY scored. I update their score locally.
+                    if(!State.me.dead && !State.gameOver) {
+                        State.score.enemy++;
+                        UI.updateScore();
+                        Logic.die();
+                    }
+                    break; 
                 case 'rematch': 
-                    // Received request to start rematch
                     UI.toast("OPPONENT REQUESTED REMATCH");
                     Logic.resetGame(); 
                     break;
@@ -729,23 +820,28 @@ const UI = {
         document.getElementById('menu-layer').classList.add('hidden'); 
         document.getElementById('hud').style.display = 'block'; 
         document.getElementById('rematch-panel').style.display = 'none';
+        
+        // Mobile Rotation Attempt
+        if(CFG.isMobile && screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(e => console.log("Orientation lock prevented"));
+        }
+        
         State.playing = true; 
         State.gameOver = false;
-        document.body.requestPointerLock(); 
         
-        // Init Score Names
+        if(!CFG.isMobile) document.body.requestPointerLock(); 
+        
         UI.updateScoreNames();
         UI.updateAmmo();
         
         Logic.spawn(); 
-        UI.toast("MATCH STARTED - GOOD LUCK");
+        UI.toast("MATCH STARTED");
     }, 
     updateScoreNames: () => {
         document.getElementById('score-p1').innerText = `${State.myName}: 0`;
         document.getElementById('score-p2').innerText = `${State.enemyName}: 0`;
     },
     updateScore: () => { 
-        // Uses local State.score to update UI text
         const p1 = State.score.me;
         const p2 = State.score.enemy;
         document.getElementById('score-p1').innerText = `${State.myName}: ${p1}`;
@@ -786,9 +882,15 @@ const Logic = {
         
         if(State.playing) { 
             if(!State.gameOver) Logic.physics(dt); 
-                        
+            
+            // FIX: Update NameTag rotation to look at camera to prevent glitching
             const p = State.players['enemy']; 
-            if(p && p.mesh) p.mesh.position.lerp(p.targetPos, 0.2); 
+            if(p && p.mesh) {
+                p.mesh.position.lerp(p.targetPos, 0.2);
+                if(p.mesh.userData.nameTag) {
+                    p.mesh.userData.nameTag.lookAt(Gfx.camera.position);
+                }
+            }
             
             Gfx.updateParticles(dt);
             Gfx.renderer.render(Gfx.scene, Gfx.camera); 
@@ -834,9 +936,9 @@ const Logic = {
         if(State.me.dead) return; 
         const { me, keys } = State; 
         
-        const inputVec = new THREE.Vector3((keys['KeyD']?1:0)-(keys['KeyA']?1:0), 0, (keys['KeyS']?1:0)-(keys['KeyW']?1:0));
-        const isMoving = inputVec.lengthSq() > 0;
-        const isSprinting = keys['ShiftLeft'] && keys['KeyW'] && !me.scoped && isMoving && !me.reloading;
+        const isMoving = (keys['KeyW'] || keys['KeyS'] || keys['KeyA'] || keys['KeyD']);
+        // Check Sprint (Desktop Shift or Mobile Toggle)
+        const isSprinting = (State.mobileSprint || keys['ShiftLeft']) && !me.scoped && isMoving && !me.reloading;
         const speed = isSprinting ? CFG.sprintSpeed : CFG.baseSpeed; 
         
         const fwd = new THREE.Vector3(0,0,-1).applyAxisAngle(new THREE.Vector3(0,1,0), me.rot.y); 
@@ -932,7 +1034,6 @@ const Logic = {
             Gfx.weaponGroup.rotation.x = State.recoil; 
             Gfx.weaponGroup.rotation.y = -sway.x; 
             
-            // Reload Animation (Weapon tilt)
             if(me.reloading) {
                 Gfx.weaponGroup.rotation.x = -Math.PI/4;
                 Gfx.weaponGroup.position.y -= 0.2;
@@ -941,7 +1042,7 @@ const Logic = {
 
         const baseFov = 85; 
         const targetFov = me.scoped ? 15 : (isSprinting ? 95 : baseFov); 
-        Gfx.camera.fov += (targetFov - Gfx.camera.fov) * 0.3; // Faster transition for "smoothness"
+        Gfx.camera.fov += (targetFov - Gfx.camera.fov) * 0.3; 
         Gfx.camera.updateProjectionMatrix(); 
         
         if(me.scoped && Gfx.laserLine) {
@@ -1007,23 +1108,20 @@ const Logic = {
                 Gfx.spawnParticles(hits[0].point, 0xff0000, 10, 4); 
                 UI.showHitMarker();
                 UI.feed(`HIT ${State.enemyName}`); 
-                State.conn.send({ t:'hit' }); 
-                Logic.onScore(); 
-            } else {
-                // Sfx.play('wall'); 
+                
+                // FIX: I hit the enemy, so I increment MY score.
+                // I send 'hit' to them so they can increment MY score on THEIR screen.
+                State.score.me++;
+                UI.updateScore();
+                
+                State.conn.send({ t:'hit' });
+                
+                if(State.score.me >= CFG.winScore) { 
+                    Logic.endGame(true); 
+                    State.conn.send({ t:'win' }); 
+                }
             }
         } 
-    }, 
-    
-    onScore: () => { 
-        State.score.me++; 
-        UI.updateScore(); 
-        
-        // Check Win
-        if(State.score.me >= CFG.winScore) { 
-            Logic.endGame(true); 
-            State.conn.send({ t:'win' }); // Tell enemy they lost
-        }
     }, 
     
     die: () => { 
@@ -1035,7 +1133,7 @@ const Logic = {
     
     endGame: (iWon) => { 
         State.gameOver = true; 
-        document.exitPointerLock(); 
+        if(!CFG.isMobile) document.exitPointerLock(); 
         const feed = document.getElementById('killfeed'); 
         feed.style.opacity = 0; 
         
@@ -1067,7 +1165,6 @@ const Logic = {
     },
 
     resetGame: () => {
-        // Reset scores and state
         State.score.me = 0;
         State.score.enemy = 0;
         State.gameOver = false;
@@ -1076,15 +1173,16 @@ const Logic = {
         document.getElementById('rematch-panel').style.display = 'none';
         document.getElementById('rematch-panel').style.pointerEvents = 'none';
         
-        // Respawn
         Logic.spawn();
-        document.body.requestPointerLock();
+        if(!CFG.isMobile) document.body.requestPointerLock();
     }
 }; 
 
 window.onload = () => { 
     Gfx.init(); 
     Logic.loop(0); 
+    
+    // --- DESKTOP INPUTS ---
     window.onkeydown = e => { 
         State.keys[e.code] = true; 
         if(e.code === 'KeyR' && State.playing && !State.gameOver && !State.me.dead) Logic.reload();
@@ -1122,6 +1220,145 @@ window.onload = () => {
         State.me.rot.x = Math.max(-1.5, Math.min(1.5, State.me.rot.x)); 
     }; 
     
+    // --- MOBILE CONTROLS (JOYSTICK & BUTTONS) ---
+    const joystick = document.getElementById('joystick-area');
+    const knob = document.getElementById('joystick-knob');
+    const scopeBtn = document.getElementById('scope-btn');
+    const sprintBtn = document.getElementById('sprint-toggle');
+    let joyCenter = { x:0, y:0 };
+    let joyTouchId = null;
+
+    joystick.addEventListener('touchstart', e => {
+        e.preventDefault();
+        const touch = e.changedTouches[0];
+        joyTouchId = touch.identifier;
+        const rect = joystick.getBoundingClientRect();
+        joyCenter = { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
+        updateJoystick(touch);
+    });
+
+    joystick.addEventListener('touchmove', e => {
+        e.preventDefault();
+        for(let i=0; i<e.changedTouches.length; i++){
+            if(e.changedTouches[i].identifier === joyTouchId) {
+                updateJoystick(e.changedTouches[i]);
+            }
+        }
+    });
+
+    const endJoystick = (e) => {
+        for(let i=0; i<e.changedTouches.length; i++){
+            if(e.changedTouches[i].identifier === joyTouchId) {
+                joyTouchId = null;
+                knob.style.transform = `translate(-50%, -50%)`;
+                State.keys['KeyW'] = false;
+                State.keys['KeyS'] = false;
+                State.keys['KeyA'] = false;
+                State.keys['KeyD'] = false;
+            }
+        }
+    };
+    
+    joystick.addEventListener('touchend', endJoystick);
+    joystick.addEventListener('touchcancel', endJoystick);
+
+    function updateJoystick(touch) {
+        const maxDist = 45;
+        let dx = touch.clientX - joyCenter.x;
+        let dy = touch.clientY - joyCenter.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        
+        if(dist > maxDist) {
+            dx = (dx/dist) * maxDist;
+            dy = (dy/dist) * maxDist;
+        }
+        
+        knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        
+        // Map to Keys
+        const threshold = 10;
+        State.keys['KeyW'] = dy < -threshold;
+        State.keys['KeyS'] = dy > threshold;
+        State.keys['KeyA'] = dx < -threshold;
+        State.keys['KeyD'] = dx > threshold;
+    }
+
+    // Mobile Look (Drag on right side of screen area if not using joystick)
+    let lookTouchId = null;
+    let lastLookX = 0;
+    let lastLookY = 0;
+    
+    // Simple touch look for screen area outside controls
+    document.getElementById('ui-layer').addEventListener('touchstart', e => {
+        // Ignore touches on controls
+        if(e.target.closest('#mobile-controls')) return;
+        
+        for(let i=0; i<e.changedTouches.length; i++){
+            const t = e.changedTouches[i];
+            if(t.clientX > window.innerWidth / 2) {
+                lookTouchId = t.identifier;
+                lastLookX = t.clientX;
+                lastLookY = t.clientY;
+            }
+        }
+    });
+
+    document.getElementById('ui-layer').addEventListener('touchmove', e => {
+        if(lookTouchId === null) return;
+        for(let i=0; i<e.changedTouches.length; i++){
+            const t = e.changedTouches[i];
+            if(t.identifier === lookTouchId) {
+                const dx = t.clientX - lastLookX;
+                const dy = t.clientY - lastLookY;
+                lastLookX = t.clientX;
+                lastLookY = t.clientY;
+                
+                const s = State.me.scoped ? CFG.scopeSens * 100 : CFG.sens * 100; // Scale for touch
+                State.me.rot.y -= dx * s;
+                State.me.rot.x -= dy * s;
+                State.me.rot.x = Math.max(-1.5, Math.min(1.5, State.me.rot.x));
+            }
+        }
+    });
+
+    const endLook = (e) => {
+        for(let i=0; i<e.changedTouches.length; i++){
+            if(e.changedTouches[i].identifier === lookTouchId) {
+                lookTouchId = null;
+            }
+        }
+    };
+    document.getElementById('ui-layer').addEventListener('touchend', endLook);
+    document.getElementById('ui-layer').addEventListener('touchcancel', endLook);
+
+    // Sprint Button
+    sprintBtn.addEventListener('touchstart', e => {
+        e.preventDefault();
+        State.mobileSprint = !State.mobileSprint;
+        sprintBtn.classList.toggle('active', State.mobileSprint);
+    });
+
+    // Scope Button (Hold to Scope, Release to Shoot)
+    scopeBtn.addEventListener('touchstart', e => {
+        e.preventDefault();
+        if(State.playing && !State.gameOver && !State.me.dead) {
+            State.me.scoped = true; 
+            document.getElementById('scope').style.display = 'block'; 
+            document.getElementById('crosshair').style.display = 'none'; 
+        }
+    });
+
+    scopeBtn.addEventListener('touchend', e => {
+        e.preventDefault();
+        if(State.me.scoped) {
+            Logic.shoot(); 
+            State.me.scoped = false; 
+            document.getElementById('scope').style.display = 'none'; 
+            document.getElementById('crosshair').style.display = 'block'; 
+        }
+    });
+
+
     // UI Events
     document.getElementById('btn-host').onclick = () => Net.init('host'); 
     document.getElementById('btn-join').onclick = () => { 
@@ -1139,7 +1376,7 @@ window.onload = () => {
     
     document.getElementById('host-code').onclick = (e) => { 
         navigator.clipboard.writeText(e.target.value).then(() => {
-            UI.toast("FREQUENCY COPIED");
+            UI.toast("ROOM CODE COPIED");
         });
     }; 
     
