@@ -33,11 +33,12 @@
         /* --- THEME: DARK TACTICAL UI --- */
         :root { 
             --bg-ui: #050505; 
-            --panel: rgba(10, 10, 10, 0.95); 
+            --panel: rgba(10, 10, 10, 0.98); 
             --panel-border: #333;
             --accent: #ff9d00; /* Amber */
             --text: #e0e0e0;
             --danger: #d63031;
+            --success: #2ecc71;
             --hud-bg: rgba(0, 0, 0, 0.7);
             --input-bg: #1a1a1a;
             --font-main: 'Black Ops One', cursive;
@@ -72,7 +73,7 @@
         }
         #settings-btn:hover { color: var(--accent); border-color: var(--accent); }
 
-        /* --- MODALS (SETTINGS & WARNINGS) --- */
+        /* --- MODALS --- */
         .modal-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 200;
@@ -91,50 +92,12 @@
         }
 
         /* --- VOLUME SLIDER --- */
-        .volume-control {
-            display: flex; align-items: center; gap: 15px;
-            margin: 20px 0;
-            color: #fff;
-        }
-        
-        input[type=range].custom-slider {
-            -webkit-appearance: none; 
-            width: 100%; 
-            background: transparent; 
-        }
-        
+        .volume-control { display: flex; align-items: center; gap: 15px; margin: 20px 0; color: #fff; }
+        input[type=range].custom-slider { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range].custom-slider:focus { outline: none; }
-
-        /* Chrome/Safari Track */
-        input[type=range].custom-slider::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; cursor: pointer;
-            background: #333; border-radius: 2px;
-        }
-        
-        /* Chrome/Safari Thumb */
-        input[type=range].custom-slider::-webkit-slider-thumb {
-            height: 16px; width: 16px; border-radius: 50%;
-            background: var(--accent); cursor: pointer;
-            -webkit-appearance: none; margin-top: -6px; /* center on track */
-            box-shadow: 0 0 10px var(--accent);
-            transition: transform 0.1s;
-        }
+        input[type=range].custom-slider::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #333; border-radius: 2px; }
+        input[type=range].custom-slider::-webkit-slider-thumb { height: 16px; width: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; -webkit-appearance: none; margin-top: -6px; transition: transform 0.1s; }
         input[type=range].custom-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
-
-        /* Firefox Track */
-        input[type=range].custom-slider::-moz-range-track {
-            width: 100%; height: 4px; cursor: pointer;
-            background: #333; border-radius: 2px;
-        }
-        
-        /* Firefox Thumb */
-        input[type=range].custom-slider::-moz-range-thumb {
-            height: 16px; width: 16px; border: none; border-radius: 50%;
-            background: var(--accent); cursor: pointer;
-            box-shadow: 0 0 10px var(--accent);
-            transition: transform 0.1s;
-        }
-        input[type=range].custom-slider::-moz-range-thumb:hover { transform: scale(1.2); }
 
         /* --- MOBILE CONTROLS --- */
         #mobile-controls {
@@ -214,12 +177,16 @@
         input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(255, 157, 0, 0.2); background: #222; }
         input[readonly] { color: var(--accent); font-family: monospace; font-size: 1.4rem; letter-spacing: 3px; border-color: var(--accent); background: #0f0f0f; }
         
-        input[type="number"].custom-num {
-            -moz-appearance: textfield; appearance: textfield;
+        /* HIDE NUMBER INPUT SPINNERS */
+        input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+            font-family: var(--font-ui);
         }
-        input[type="number"].custom-num::-webkit-outer-spin-button,
-        input[type="number"].custom-num::-webkit-inner-spin-button {
-            -webkit-appearance: none; margin: 0;
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
         }
         
         button { 
@@ -235,9 +202,7 @@
         .btn-red:hover { background: var(--danger); color: white; box-shadow: 0 0 20px rgba(214, 48, 49, 0.4); }
 
         /* --- FOOTER --- */
-        .footer {
-            margin-top: 20px; font-size: 0.8rem; color: #666; font-family: var(--font-ui);
-        }
+        .footer { margin-top: 20px; font-size: 0.8rem; color: #666; font-family: var(--font-ui); }
         .footer a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent); transition: 0.2s;}
         .footer a:hover { color: #fff; border-color: #fff; }
 
@@ -278,17 +243,17 @@
 
         /* --- SCOPE --- */
         #crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.8; pointer-events: none; }
-        .ch-line { position: absolute; background: #fff; box-shadow: 0 0 2px #000; }
-        .ch-v { width: 2px; height: 20px; left: 50%; top: 50%; transform: translate(-50%, -50%); } 
-        .ch-h { width: 20px; height: 2px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+        .ch_line { position: absolute; background: #fff; box-shadow: 0 0 2px #000; }
+        .ch_v { width: 2px; height: 20px; left: 50%; top: 50%; transform: translate(-50%, -50%); } 
+        .ch_h { width: 20px; height: 2px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
 
         #hitmarker {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5);
             width: 40px; height: 40px; opacity: 0; transition: transform 0.1s, opacity 0.2s; pointer-events: none;
         }
-        .hm-line { position: absolute; background: #fff; width: 100%; height: 3px; top: 50%; left: 0; transform-origin: center; }
-        .hm-1 { transform: rotate(45deg); }
-        .hm-2 { transform: rotate(-45deg); }
+        .hm_line { position: absolute; background: #fff; width: 100%; height: 3px; top: 50%; left: 0; transform-origin: center; }
+        .hm_1 { transform: rotate(45deg); }
+        .hm_2 { transform: rotate(-45deg); }
         .hit-active { opacity: 1 !important; transform: translate(-50%, -50%) scale(1.2) !important; }
 
         #scope {
@@ -298,20 +263,96 @@
         .scope-overlay { width: 100%; height: 100%; background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.6) 32%, #000 100%); }
         .scope-reticle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90vh; height: 90vh; border: 1px solid rgba(0,0,0,0.5); border-radius: 50%; pointer-events: none; }
         .scope-cross { position: absolute; background: #000; }
-        .sc-v { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
-        .sc-h { top: 50%; left: 0; width: 100%; height: 1px; transform: translateY(-50%); }
+        .sc_v { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
+        .sc_h { top: 50%; left: 0; width: 100%; height: 1px; transform: translateY(-50%); }
         .scope-center-dot { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 4px; height: 4px; background: red; border-radius: 50%; box-shadow: 0 0 4px red; }
         .scope-data { position: absolute; color: #000; font-size: 14px; font-weight: bold; left: 52%; top: 54%; font-family: monospace; text-shadow: 0 0 2px rgba(255,255,255,0.8); }
 
-        /* --- REMATCH PANEL --- */
-        #rematch-panel {
+        /* --- REMATCH OVERLAY --- */
+        #rematch-overlay {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 200;
+            background: rgba(0,0,0,0.9); z-index: 200;
             flex-direction: column; align-items: center; justify-content: center; pointer-events: auto;
+            backdrop-filter: blur(5px);
         }
-        #rematch-panel h2 { font-family: var(--font-main); font-size: 3rem; margin-bottom: 20px; text-shadow: 0 0 20px currentColor; }
-        .win-txt { color: #00ffcc; text-shadow: 0 0 20px #00ffcc; }
-        .lose-txt { color: #ff3333; text-shadow: 0 0 20px #ff3333; }
+
+        .end-card {
+            background: #111;
+            border: 1px solid #333;
+            padding: 40px;
+            text-align: center;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+        
+        .end-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: #fff;
+        }
+
+        #end-title {
+            font-family: var(--font-main); font-size: 3.5rem; margin: 0 0 10px 0;
+            text-transform: uppercase; letter-spacing: 4px;
+        }
+        
+        .end-victory { color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        .end-defeat { color: #888; text-shadow: none; }
+
+        #end-subtitle {
+            font-family: var(--font-ui); color: #888; margin-bottom: 30px; font-size: 1rem; letter-spacing: 1px;
+        }
+
+        .end-actions {
+            display: flex; flex-direction: column; gap: 15px; width: 100%;
+        }
+
+        .btn-action {
+            padding: 15px;
+            font-family: var(--font-main);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border: none;
+            border-radius: 2px;
+            transition: all 0.2s;
+            text-align: center;
+            width: 100%;
+        }
+
+        #btn-end-rematch {
+            background: #fff; color: #000; border: 1px solid #fff;
+        }
+        #btn-end-rematch:hover { background: #ccc; }
+        #btn-end-rematch:disabled { background: #333; color: #555; cursor: default; border-color: #333; }
+
+        #btn-end-exit {
+            background: transparent; color: #666; border: 1px solid #333;
+        }
+        #btn-end-exit:hover { color: #fff; border-color: #fff; background: rgba(255,255,255,0.05); }
+
+        #rematch-status-msg {
+            margin-top: 20px; font-size: 0.9rem; color: #aaa; font-family: var(--font-ui); height: 20px;
+        }
+
+        #accept-decline-container {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+        
+        .btn-accept { background: #2ecc71; color: #fff; border: none; }
+        .btn-accept:hover { background: #27ae60; }
+        
+        .btn-decline { background: transparent; color: #e74c3c; border: 1px solid #e74c3c; }
+        .btn-decline:hover { background: #e74c3c; color: #fff; }
+
 
         /* --- TOAST NOTIFICATIONS --- */
         #toast-container { position: absolute; top: 100px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; pointer-events: none; z-index: 300; width: 80%; max-width: 400px; }
@@ -330,7 +371,7 @@
             scrollbar-width: none; -ms-overflow-style: none;
         }
         #chat-messages::-webkit-scrollbar { display: none; }
-        #chat-input-wrapper { display: none; background: var(--chat-bg); border: 1px solid var(--accent); border-radius: 2px; overflow: hidden; }
+        #chat-input-wrapper { display: none; background: var(--chat-bg); border: 1px solid var(--accent); border-radius: 2px; overflow: hidden; pointer-events: auto; }
         #chat-input { width: 100%; padding: 10px; background: transparent; border: none; color: #fff; font-family: var(--font-ui); font-size: 0.9rem; outline: none; text-transform: none; letter-spacing: 0.5px; }
         #chat-input:focus { box-shadow: none; }
         .chat-message { margin: 3px 0; font-size: 0.85rem; animation: fadeIn 0.2s ease-out; text-shadow: 0 1px 2px #000; }
@@ -346,14 +387,13 @@
             #score-p1, #score-p2 { top: 10px; font-size: 1.2rem; padding: 5px 10px; }
             #killfeed { font-size: 1.8rem; top: 25%; }
             #ammo-hud { bottom: 100px; right: 170px; }
-            #btn-rematch { width: 250px; }
+            #end-title { font-size: 2.5rem; }
             #chat-container { max-width: 70%; bottom: auto; top: 80px; left: 10px; }
         }
     </style>
 </head>
 <body>
 
-<!-- LOBBY AUDIO (Loops infinitely) -->
 <audio id="lobby-audio" loop>
     <source src="https://github.com/i3xp/aimtwo/raw/refs/heads/main/aimtwo_lobby_song.mp3" type="audio/mpeg">
 </audio>
@@ -376,19 +416,19 @@
         </div>
 
         <div id="crosshair">
-            <div class="ch-line ch-v"></div>
-            <div class="ch-line ch-h"></div>
+            <div class="ch_line ch_v"></div>
+            <div class="ch_line ch_h"></div>
         </div>
         <div id="hitmarker">
-            <div class="hm-line hm-1"></div>
-            <div class="hm-line hm-2"></div>
+            <div class="hm_line hm_1"></div>
+            <div class="hm_line hm_2"></div>
         </div>
         
         <div id="scope">
             <div class="scope-overlay"></div>
             <div class="scope-reticle">
-                <div class="scope-cross sc-v"></div>
-                <div class="scope-cross sc-h"></div>
+                <div class="scope-cross sc_v"></div>
+                <div class="scope-cross sc_h"></div>
                 <div class="scope-center-dot"></div>
             </div>
             <div class="scope-data"><span id="dist-val">--</span>m</div>
@@ -408,17 +448,34 @@
         <div id="scope-btn">SCOPE</div>
     </div>
 
-    <div id="rematch-panel">
-        <h2 id="end-msg">GAME OVER</h2>
-        <button id="btn-rematch">REQUEST REMATCH</button>
-        <div id="rematch-status" style="margin-top: 15px; color: #aaa; font-size: 0.9rem; font-family: var(--font-ui);">WAITING FOR OPPONENT...</div>
+    <!-- REMATCH OVERLAY -->
+    <div id="rematch-overlay">
+        <div class="end-card">
+            <h2 id="end-title">GAME OVER</h2>
+            <div id="end-subtitle">MATCH SUMMARY</div>
+            
+            <div class="end-actions">
+                <button id="btn-end-rematch" class="btn-action">Rematch</button>
+                <button id="btn-end-exit" class="btn-action">Exit to Lobby</button>
+            </div>
+
+            <!-- Popup Accept/Decline Section (Hidden initially) -->
+            <div id="accept-decline-container">
+                <div style="color:#fff; margin-bottom:10px; font-weight:bold;">OPPONENT REQUESTED REMATCH</div>
+                <div style="display:flex; gap:10px;">
+                    <button id="btn-accept" class="btn-action btn-accept">ACCEPT</button>
+                    <button id="btn-decline" class="btn-action btn-decline">DECLINE</button>
+                </div>
+            </div>
+
+            <div id="rematch-status-msg"></div>
+        </div>
     </div>
 </div>
 
 <div id="toast-container"></div>
 
 <div id="menu-layer">
-    <!-- Settings Icon (Top Right) -->
     <div id="settings-btn"><i class="fas fa-cog"></i></div>
 
     <!-- Autoplay Warning Modal -->
@@ -466,7 +523,7 @@
         
         <div style="margin: 20px 0; padding: 15px; background: #151515; border: 1px solid #333; border-radius: 2px;">
             <div style="font-size:0.8rem; color:#666; margin-bottom:10px; letter-spacing:1px;"><i class="fas fa-bullseye icon"></i>KILL LIMIT</div>
-            <input type="number" id="inp-win-score" class="custom-num" value="30" min="10" max="100" style="width:100px; margin:0 auto; padding:10px; display:block;">
+            <input type="number" id="inp-win-score" value="30" min="10" max="100" style="width:100px; margin:0 auto; padding:10px; display:block;">
         </div>
         
         <div style="margin: 20px 0; padding: 15px; background: #151515; border: 1px solid #333; border-radius: 2px;">
@@ -494,18 +551,16 @@
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
 <script>
-/**
- * AIM2: SNIPER OPS - DAYLIGHT EDITION
- * Updates: Dark UI, Mobile Controls, Score Sync, Smooth Graphics, Chat, Music System
- */
+ 
 
 const CFG = { 
-    baseSpeed: 160, 
-    sprintSpeed: 210, 
-    jumpForce: 35, 
-    gravity: 100, 
-    friction: 0.9,         
-    airControl: 0.3, 
+    baseSpeed: 20, 
+    sprintSpeed: 30, 
+    jumpForce: 25, 
+    gravity: 90, 
+    friction: 0.85,         
+    stopSpeed: 10.0,        
+    airControl: 0.15,       
     sens: 0.002, 
     scopeSens: 0.0004, 
     tickRate: 30, 
@@ -541,41 +596,26 @@ const State = {
     mobileSprint: false,
     scopeButtonHeld: { left: false, right: false }, 
     chat: { active: false, messages: [], maxMessages: 20 },
-    audio: { muted: false, volume: 0.5 }
+    audio: { muted: false, volume: 0.5 },
+    rematchState: 'IDLE' 
 };
 
-// --- AUDIO SYSTEM (Lobby Music) ---
+// --- AUDIO SYSTEM ---
 const LobbyAudio = {
     el: document.getElementById('lobby-audio'),
-    
     init: () => {
         LobbyAudio.el.volume = State.audio.volume;
         LobbyAudio.el.muted = State.audio.muted;
-        
-        // Attempt autoplay on load
         const playPromise = LobbyAudio.el.play();
-        
         if (playPromise !== undefined) {
             playPromise.catch(error => {
-                console.log("Autoplay blocked:", error);
                 document.getElementById('autoplay-warning').classList.add('active');
             });
         }
     },
-
-    play: () => {
-        LobbyAudio.el.play().catch(e => console.log("Play blocked:", e));
-    },
-
-    pause: () => {
-        LobbyAudio.el.pause();
-    },
-
-    setVolume: (val) => {
-        State.audio.volume = val;
-        LobbyAudio.el.volume = val;
-    },
-
+    play: () => LobbyAudio.el.play().catch(e => console.log(e)),
+    pause: () => LobbyAudio.el.pause(),
+    setVolume: (val) => { State.audio.volume = val; LobbyAudio.el.volume = val; },
     toggleMute: () => {
         State.audio.muted = !State.audio.muted;
         LobbyAudio.el.muted = State.audio.muted;
@@ -583,7 +623,6 @@ const LobbyAudio = {
     }
 };
 
-// --- GAME AUDIO SYSTEM (Procedural SFX) ---
 const Sfx = { 
     ctx: null, 
     bufferNoise: null,
@@ -629,7 +668,6 @@ const Sfx = {
             const gain = Sfx.ctx.createGain();
             osc.type = 'sine';
             osc.frequency.setValueAtTime(80, t);
-            osc.frequency.exponentialRampToValueAtTime(0.01, t + 0.1);
             gain.gain.setValueAtTime(0.2, t);
             gain.gain.linearRampToValueAtTime(0, t + 0.1);
             osc.connect(gain); gain.connect(Sfx.ctx.destination);
@@ -674,6 +712,7 @@ const Gfx = {
     init: () => { 
         Gfx.scene = new THREE.Scene(); 
         Gfx.scene.background = new THREE.Color(0x87CEEB); 
+        // FOG REMOVED AS REQUESTED
         
         Gfx.camera = new THREE.PerspectiveCamera(85, innerWidth/innerHeight, 0.1, 500); 
         
@@ -903,28 +942,13 @@ const Net = {
         State.peer.on('error', err => {
             console.error("PeerJS Error:", err);
             let message = "NETWORK ERROR";
+            if(err.type === 'peer-unavailable') message = "INVALID ROOM CODE";
+            else if(err.type === 'disconnected') message = "CONNECTION LOST";
             
-            if(err.type === 'peer-unavailable') {
-                message = "INVALID ROOM CODE";
-                UI.toast(message, "error");
-                if(role === 'client') {
-                    document.getElementById('btn-connect').innerText = "CONNECT";
-                    document.getElementById('btn-connect').disabled = false;
-                    document.getElementById('client-status').innerText = "Invalid room code. Please check and try again.";
-                }
-            } else if(err.type === 'disconnected' || err.type === 'server-error') {
-                message = "CONNECTION LOST";
-                UI.toast(message, "error");
-                if(role === 'client') {
-                    document.getElementById('btn-connect').innerText = "RETRY";
-                    document.getElementById('btn-connect').disabled = false;
-                }
-            } else {
-                UI.toast(message, "error");
-                if(role === 'client') {
-                    document.getElementById('btn-connect').innerText = "RETRY";
-                    document.getElementById('btn-connect').disabled = false;
-                }
+            UI.toast(message, "error");
+            if(role === 'client') {
+                document.getElementById('btn-connect').innerText = "CONNECT";
+                document.getElementById('btn-connect').disabled = false;
             }
         });
     }, 
@@ -981,9 +1005,17 @@ const Net = {
                         Logic.die();
                     }
                     break; 
-                case 'rematch': 
-                    UI.toast("OPPONENT REQUESTED REMATCH");
-                    Logic.resetGame(); 
+                case 'end': 
+                    Logic.endGame(data.winner === State.myName); 
+                    break;
+                case 'rematch_req':
+                    UI.handleRematchRequest();
+                    break;
+                case 'rematch_acc':
+                    UI.handleRematchAccept();
+                    break;
+                case 'rematch_dec':
+                    UI.handleRematchDecline();
                     break;
                 case 'chat': 
                     UI.addChatMessage(data.n, data.m);
@@ -1021,12 +1053,9 @@ const UI = {
     showPanel: (id) => {
         document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
-        
-        // Try to resume music when back in menu
-        if(id === 'panel-main') {
-            LobbyAudio.play();
-        }
+        if(id === 'panel-main') LobbyAudio.play();
     },
+    
     toast: (msg, type='info') => {
         const c = document.getElementById('toast-container');
         const el = document.createElement('div');
@@ -1040,12 +1069,10 @@ const UI = {
             setTimeout(() => el.remove(), 300);
         }, 3000);
     },
+    
     startGame: () => { 
         document.getElementById('menu-layer').classList.add('hidden'); 
         document.getElementById('hud').style.display = 'block'; 
-        document.getElementById('rematch-panel').style.display = 'none';
-        
-        // STOP LOBBY MUSIC
         LobbyAudio.pause();
         
         if(CFG.isMobile && screen.orientation && screen.orientation.lock) {
@@ -1054,6 +1081,7 @@ const UI = {
         
         State.playing = true; 
         State.gameOver = false;
+        State.rematchState = 'IDLE';
         
         if(!CFG.isMobile) document.body.requestPointerLock(); 
         
@@ -1063,16 +1091,19 @@ const UI = {
         Logic.spawn(); 
         UI.toast("MATCH STARTED");
     }, 
+    
     updateScoreNames: () => {
         document.getElementById('score-p1').innerText = `${State.myName}: 0`;
         document.getElementById('score-p2').innerText = `${State.enemyName}: 0`;
     },
+    
     updateScore: () => { 
         const p1 = State.score.me;
         const p2 = State.score.enemy;
         document.getElementById('score-p1').innerText = `${State.myName}: ${p1}`;
         document.getElementById('score-p2').innerText = `${State.enemyName}: ${p2}`;
     }, 
+    
     updateAmmo: () => {
         document.getElementById('ammo-count').innerText = `${State.me.ammo}/${CFG.maxAmmo}`;
         if(State.me.reloading) {
@@ -1085,6 +1116,7 @@ const UI = {
             else document.getElementById('ammo-count').style.color = '#fff';
         }
     },
+    
     feed: (text) => { 
         if(State.gameOver) return; 
         const el = document.getElementById('killfeed'); 
@@ -1092,11 +1124,13 @@ const UI = {
         el.style.opacity = 1; 
         setTimeout(() => { if(!State.gameOver) el.style.opacity = 0; }, 2000); 
     },
+    
     showHitMarker: () => {
         const hm = document.getElementById('hitmarker');
         hm.classList.add('hit-active');
         setTimeout(() => hm.classList.remove('hit-active'), 150);
     },
+    
     addChatMessage: (sender, message) => {
         const messagesEl = document.getElementById('chat-messages');
         const wrapper = document.getElementById('chat-input-wrapper');
@@ -1120,10 +1154,9 @@ const UI = {
         }
         
         messagesEl.scrollTop = messagesEl.scrollHeight;
-        
-        // Keep messages visible (CS:GO style)
         messagesEl.style.display = 'block';
     },
+    
     toggleChat: () => {
         if(!State.playing || State.gameOver) return;
         
@@ -1144,9 +1177,96 @@ const UI = {
             input.blur();
         }
     },
+    
     toggleSettings: () => {
         const modal = document.getElementById('settings-modal');
         modal.classList.toggle('active');
+    },
+
+    showEndScreen: (iWon) => {
+        State.gameOver = true;
+        State.rematchState = 'IDLE';
+        
+        if(!CFG.isMobile) document.exitPointerLock(); 
+        document.getElementById('killfeed').style.opacity = 0; 
+        
+        const overlay = document.getElementById('rematch-overlay');
+        const title = document.getElementById('end-title');
+        const rematchBtn = document.getElementById('btn-end-rematch');
+        const exitBtn = document.getElementById('btn-end-exit');
+        const acceptContainer = document.getElementById('accept-decline-container');
+        const statusMsg = document.getElementById('rematch-status-msg');
+
+        overlay.style.display = 'flex';
+        
+        if(iWon) {
+            title.innerText = "VICTORY";
+            title.className = "end-victory";
+        } else {
+            title.innerText = "DEFEAT";
+            title.className = "end-defeat";
+        }
+
+        rematchBtn.disabled = false;
+        rematchBtn.innerText = "REMATCH";
+        exitBtn.disabled = false;
+        
+        acceptContainer.style.display = 'none';
+        statusMsg.innerText = "";
+    },
+
+    handleRematchRequest: () => {
+        State.rematchState = 'RECEIVED';
+        const acceptContainer = document.getElementById('accept-decline-container');
+        const statusMsg = document.getElementById('rematch-status-msg');
+        acceptContainer.style.display = 'flex';
+        statusMsg.innerText = "";
+    },
+
+    requestRematch: () => {
+        State.rematchState = 'REQUESTING';
+        State.conn.send({ t: 'rematch_req' });
+        
+        const rematchBtn = document.getElementById('btn-end-rematch');
+        const statusMsg = document.getElementById('rematch-status-msg');
+        
+        rematchBtn.disabled = true;
+        rematchBtn.innerText = "WAITING...";
+        statusMsg.innerText = "Waiting for opponent to accept...";
+    },
+
+    acceptRematch: () => {
+        if(State.rematchState !== 'RECEIVED') return;
+        State.conn.send({ t: 'rematch_acc' });
+        Logic.resetGame();
+    },
+
+    declineRematch: () => {
+        if(State.rematchState !== 'RECEIVED') return;
+        State.conn.send({ t: 'rematch_dec' });
+        
+        const acceptContainer = document.getElementById('accept-decline-container');
+        const statusMsg = document.getElementById('rematch-status-msg');
+        
+        acceptContainer.style.display = 'none';
+        statusMsg.innerText = "Rematch declined by opponent.";
+    },
+
+    handleRematchAccept: () => {
+        if(State.rematchState === 'REQUESTING') {
+            Logic.resetGame();
+        }
+    },
+
+    handleRematchDecline: () => {
+        if(State.rematchState === 'REQUESTING') {
+            const rematchBtn = document.getElementById('btn-end-rematch');
+            const statusMsg = document.getElementById('rematch-status-msg');
+            
+            rematchBtn.disabled = false;
+            rematchBtn.innerText = "REMATCH";
+            statusMsg.innerText = "Opponent declined rematch.";
+        }
     }
 }; 
 
@@ -1219,17 +1339,29 @@ const Logic = {
         const fwd = new THREE.Vector3(0,0,-1).applyAxisAngle(new THREE.Vector3(0,1,0), me.rot.y); 
         const right = new THREE.Vector3(1,0,0).applyAxisAngle(new THREE.Vector3(0,1,0), me.rot.y); 
         const inputDir = new THREE.Vector3(); 
+        
         if(keys['KeyW']) inputDir.add(fwd); 
         if(keys['KeyS']) inputDir.sub(fwd); 
         if(keys['KeyA']) inputDir.sub(right); 
         if(keys['KeyD']) inputDir.add(right); 
+        
         if(inputDir.length() > 0) inputDir.normalize(); 
         
-        const accel = speed * dt * (me.onGround ? 1.0 : CFG.airControl); 
+        const accel = speed * dt * (me.onGround ? 10.0 : CFG.airControl); 
         if(inputDir.length() > 0) me.vel.add(inputDir.multiplyScalar(accel)); 
         
-        const friction = me.onGround ? CFG.friction : 0.98; 
-        me.vel.x *= friction; me.vel.z *= friction; 
+        if(me.onGround) {
+            me.vel.x *= CFG.friction; 
+            me.vel.z *= CFG.friction;
+            
+            if(me.vel.length() < CFG.stopSpeed && !isMoving) {
+                me.vel.x = 0;
+                me.vel.z = 0;
+            }
+        } else {
+            me.vel.x *= 0.98; 
+            me.vel.z *= 0.98;
+        }
         
         if(keys['Space'] && me.onGround) { me.vel.y = CFG.jumpForce; me.onGround = false; } 
         me.vel.y -= CFG.gravity * dt; 
@@ -1290,8 +1422,8 @@ const Logic = {
                 }
             }
         } else {
-            State.weaponSway.x = Math.sin(time) * 0.003;
-            State.weaponSway.y = Math.cos(time * 0.8) * 0.003;
+            State.weaponSway.x = Math.sin(time) * 0.001; 
+            State.weaponSway.y = Math.cos(time * 0.8) * 0.001; 
         }
 
         if(State.recoil > 0) State.recoil = Math.max(0, State.recoil - dt * 5);
@@ -1390,8 +1522,8 @@ const Logic = {
                 State.conn.send({ t:'hit' });
                 
                 if(State.score.me >= CFG.winScore) { 
-                    Logic.endGame(true); 
-                    State.conn.send({ t:'win' }); 
+                    UI.showEndScreen(true);
+                    State.conn.send({ t:'end', winner: State.myName }); 
                 }
             }
         } 
@@ -1405,59 +1537,29 @@ const Logic = {
     }, 
     
     endGame: (iWon) => { 
-        State.gameOver = true; 
-        if(!CFG.isMobile) document.exitPointerLock(); 
-        const feed = document.getElementById('killfeed'); 
-        feed.style.opacity = 0; 
-        
-        const panel = document.getElementById('rematch-panel');
-        const msg = document.getElementById('end-msg');
-        const btn = document.getElementById('btn-rematch');
-        const status = document.getElementById('rematch-status');
-        
-        panel.style.display = 'flex';
-        panel.style.pointerEvents = 'auto';
-        
-        if(iWon) {
-            msg.innerText = "VICTORY";
-            msg.className = "win-txt";
-        } else {
-            msg.innerText = "DEFEAT";
-            msg.className = "lose-txt";
-        }
-        
-        status.innerText = "WAITING FOR OPPONENT...";
-        btn.innerText = "REQUEST REMATCH";
-        btn.disabled = false;
-        btn.onclick = () => {
-            btn.innerText = "WAITING...";
-            btn.disabled = true;
-            status.innerText = "REQUEST SENT";
-            State.conn.send({ t: 'rematch' });
-        };
+        UI.showEndScreen(iWon);
     },
 
     resetGame: () => {
         State.score.me = 0;
         State.score.enemy = 0;
         State.gameOver = false;
+        State.rematchState = 'IDLE';
         UI.updateScore();
         
         document.getElementById('chat-messages').innerHTML = '';
         State.chat.messages = [];
         
-        document.getElementById('rematch-panel').style.display = 'none';
-        document.getElementById('rematch-panel').style.pointerEvents = 'none';
+        document.getElementById('rematch-overlay').style.display = 'none';
         
         Logic.spawn();
         if(!CFG.isMobile) document.body.requestPointerLock();
+        UI.toast("REMATCH STARTED");
     }
 }; 
 
 window.onload = () => { 
-    // Initialize Music
     LobbyAudio.init();
-
     Gfx.init(); 
     Logic.loop(0); 
     
@@ -1497,14 +1599,18 @@ window.onload = () => {
         }
     }; 
     
-    window.onmousedown = e => { 
-        if(document.pointerLockElement !== document.body) { 
-            if(State.playing && !State.gameOver && document.getElementById('rematch-panel').style.display === 'none') {
-                document.body.requestPointerLock(); 
-            }
-            return; 
-        } 
-        
+    window.onmousedown = (e) => { 
+        // Fix for Mouse Lock: If in game and mouse is not locked, try to lock it immediately.
+        if (State.playing && !State.gameOver && document.pointerLockElement !== document.body) {
+            // Don't lock if clicking a UI element (modals, end screen, chat input)
+            if (e.target.closest('.modal-content') || e.target.closest('.panel') || e.target.closest('#rematch-overlay') || e.target.closest('#chat-input')) return;
+            
+            document.body.requestPointerLock();
+            return;
+        }
+
+        if(document.pointerLockElement !== document.body) return; 
+
         if(e.button === 0 || e.button === 2) { 
             e.preventDefault(); 
             
@@ -1517,7 +1623,7 @@ window.onload = () => {
         } 
     }; 
     
-    window.onmouseup = e => { 
+    window.onmouseup = (e) => { 
         if((e.button === 0 || e.button === 2) && State.me.scoped) { 
             e.preventDefault();
             
@@ -1548,22 +1654,12 @@ window.onload = () => {
     }; 
     
     // --- SETTINGS & AUDIO EVENTS ---
-    document.getElementById('settings-btn').onclick = () => {
-        UI.toggleSettings();
-    };
-
-    document.getElementById('btn-close-warning').onclick = () => {
-        document.getElementById('autoplay-warning').classList.remove('active');
-    };
-
-    document.getElementById('btn-close-settings').onclick = () => {
-        UI.toggleSettings();
-    };
+    document.getElementById('settings-btn').onclick = UI.toggleSettings;
+    document.getElementById('btn-close-warning').onclick = () => document.getElementById('autoplay-warning').classList.remove('active');
+    document.getElementById('btn-close-settings').onclick = UI.toggleSettings;
 
     const volSlider = document.getElementById('vol-slider');
-    volSlider.addEventListener('input', (e) => {
-        LobbyAudio.setVolume(e.target.value);
-    });
+    volSlider.addEventListener('input', (e) => LobbyAudio.setVolume(e.target.value));
 
     const muteBtn = document.getElementById('btn-mute-toggle');
     muteBtn.addEventListener('click', () => {
@@ -1592,9 +1688,7 @@ window.onload = () => {
     joystick.addEventListener('touchmove', e => {
         e.preventDefault();
         for(let i=0; i<e.changedTouches.length; i++){
-            if(e.changedTouches[i].identifier === joyTouchId) {
-                updateJoystick(e.changedTouches[i]);
-            }
+            if(e.changedTouches[i].identifier === joyTouchId) updateJoystick(e.changedTouches[i]);
         }
     });
 
@@ -1704,13 +1798,9 @@ window.onload = () => {
         }
     });
 
-
-    // UI Events
+    // --- REMATCH & LOBBY EVENTS ---
     document.getElementById('btn-host').onclick = () => Net.init('host'); 
-    document.getElementById('btn-join').onclick = () => { 
-        UI.showPanel('panel-join');
-    }; 
-    
+    document.getElementById('btn-join').onclick = () => UI.showPanel('panel-join'); 
     document.getElementById('btn-connect').onclick = () => Net.init('client'); 
     
     document.getElementById('btn-start').onclick = () => { 
@@ -1722,13 +1812,27 @@ window.onload = () => {
     }; 
     
     document.getElementById('host-code').onclick = (e) => { 
-        navigator.clipboard.writeText(e.target.value).then(() => {
-            UI.toast("ROOM CODE COPIED");
-        });
+        navigator.clipboard.writeText(e.target.value).then(() => UI.toast("ROOM CODE COPIED"));
     }; 
     
     document.getElementById('btn-back').onclick = () => location.reload(); 
     document.getElementById('btn-back-2').onclick = () => UI.showPanel('panel-main'); 
+
+    document.getElementById('btn-end-rematch').onclick = () => {
+        UI.requestRematch();
+    };
+
+    document.getElementById('btn-end-exit').onclick = () => {
+        location.reload();
+    };
+
+    document.getElementById('btn-accept').onclick = () => {
+        UI.acceptRematch();
+    };
+
+    document.getElementById('btn-decline').onclick = () => {
+        UI.declineRematch();
+    };
 }; 
 
 </script>
