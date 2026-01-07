@@ -42,22 +42,103 @@
             --input-bg: #1a1a1a;
             --font-main: 'Black Ops One', cursive;
             --font-ui: 'Chakra Petch', sans-serif;
-            --chat-bg: rgba(0, 0, 0, 0.6); /* More transparent for CS:GO feel */
+            --chat-bg: rgba(0, 0, 0, 0.6); 
         }
 
         body { 
             margin: 0; overflow: hidden; background: #000; color: var(--text);
             font-family: var(--font-ui); user-select: none; -webkit-user-select: none;
-            touch-action: none; /* Prevent browser zooming/scrolling */
+            touch-action: none; 
         }
 
         /* --- LAYOUT --- */
         #game-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
         
+        /* --- SETTINGS ICON --- */
+        #settings-btn {
+            position: absolute; top: 20px; right: 20px;
+            width: 40px; height: 40px;
+            z-index: 110;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 1.5rem;
+            transition: 0.2s;
+            pointer-events: auto;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 4px;
+        }
+        #settings-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+        /* --- MODALS (SETTINGS & WARNINGS) --- */
+        .modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 200;
+            display: flex; align-items: center; justify-content: center;
+            pointer-events: auto;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-content {
+            background: var(--panel); border: 1px solid var(--panel-border);
+            padding: 30px; width: 90%; max-width: 400px; text-align: center;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            border-radius: 2px;
+            border-top: 4px solid var(--accent);
+        }
+
+        /* --- VOLUME SLIDER --- */
+        .volume-control {
+            display: flex; align-items: center; gap: 15px;
+            margin: 20px 0;
+            color: #fff;
+        }
+        
+        input[type=range].custom-slider {
+            -webkit-appearance: none; 
+            width: 100%; 
+            background: transparent; 
+        }
+        
+        input[type=range].custom-slider:focus { outline: none; }
+
+        /* Chrome/Safari Track */
+        input[type=range].custom-slider::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer;
+            background: #333; border-radius: 2px;
+        }
+        
+        /* Chrome/Safari Thumb */
+        input[type=range].custom-slider::-webkit-slider-thumb {
+            height: 16px; width: 16px; border-radius: 50%;
+            background: var(--accent); cursor: pointer;
+            -webkit-appearance: none; margin-top: -6px; /* center on track */
+            box-shadow: 0 0 10px var(--accent);
+            transition: transform 0.1s;
+        }
+        input[type=range].custom-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+        /* Firefox Track */
+        input[type=range].custom-slider::-moz-range-track {
+            width: 100%; height: 4px; cursor: pointer;
+            background: #333; border-radius: 2px;
+        }
+        
+        /* Firefox Thumb */
+        input[type=range].custom-slider::-moz-range-thumb {
+            height: 16px; width: 16px; border: none; border-radius: 50%;
+            background: var(--accent); cursor: pointer;
+            box-shadow: 0 0 10px var(--accent);
+            transition: transform 0.1s;
+        }
+        input[type=range].custom-slider::-moz-range-thumb:hover { transform: scale(1.2); }
+
         /* --- MOBILE CONTROLS --- */
         #mobile-controls {
-            display: none; /* Hidden on desktop by default, shown via JS detection */
+            display: none; 
             position: absolute; bottom: 20px; width: 100%; height: 200px; z-index: 50;
             pointer-events: auto;
         }
@@ -109,7 +190,6 @@
             position: relative;
         }
         
-        /* Decorative corners for custom look */
         .panel::after {
             content: ''; position: absolute; bottom: 0; right: 0; width: 20px; height: 20px;
             border-bottom: 4px solid var(--accent); border-right: 4px solid var(--accent);
@@ -123,7 +203,6 @@
             font-family: var(--font-main); margin: 0 0 20px 0; font-size: 1.8rem; color: #fff; letter-spacing: 2px; 
         }
         
-        /* Icon styling */
         .icon { margin-right: 8px; color: var(--accent); }
         
         input { 
@@ -135,15 +214,12 @@
         input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(255, 157, 0, 0.2); background: #222; }
         input[readonly] { color: var(--accent); font-family: monospace; font-size: 1.4rem; letter-spacing: 3px; border-color: var(--accent); background: #0f0f0f; }
         
-        /* Custom number input without spinners */
         input[type="number"].custom-num {
-            -moz-appearance: textfield; /* Firefox */
-            appearance: textfield; /* Chrome, Safari, Edge */
+            -moz-appearance: textfield; appearance: textfield;
         }
         input[type="number"].custom-num::-webkit-outer-spin-button,
         input[type="number"].custom-num::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+            -webkit-appearance: none; margin: 0;
         }
         
         button { 
@@ -215,33 +291,17 @@
         .hm-2 { transform: rotate(-45deg); }
         .hit-active { opacity: 1 !important; transform: translate(-50%, -50%) scale(1.2) !important; }
 
-        /* Daytime Scope Styles */
         #scope {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; pointer-events: none; z-index: 20;
         }
-        .scope-overlay {
-            width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.6) 32%, #000 100%);
-        }
-        .scope-reticle { 
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            width: 90vh; height: 90vh; 
-            border: 1px solid rgba(0,0,0,0.5); border-radius: 50%; 
-            pointer-events: none; 
-        }
+        .scope-overlay { width: 100%; height: 100%; background: radial-gradient(circle, transparent 30%, rgba(0,0,0,0.6) 32%, #000 100%); }
+        .scope-reticle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90vh; height: 90vh; border: 1px solid rgba(0,0,0,0.5); border-radius: 50%; pointer-events: none; }
         .scope-cross { position: absolute; background: #000; }
         .sc-v { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
         .sc-h { top: 50%; left: 0; width: 100%; height: 1px; transform: translateY(-50%); }
-        .scope-center-dot {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 4px; height: 4px; background: red; border-radius: 50%;
-            box-shadow: 0 0 4px red;
-        }
-        .scope-data { 
-            position: absolute; color: #000; font-size: 14px; font-weight: bold; 
-            left: 52%; top: 54%; font-family: monospace; text-shadow: 0 0 2px rgba(255,255,255,0.8);
-        }
+        .scope-center-dot { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 4px; height: 4px; background: red; border-radius: 50%; box-shadow: 0 0 4px red; }
+        .scope-data { position: absolute; color: #000; font-size: 14px; font-weight: bold; left: 52%; top: 54%; font-family: monospace; text-shadow: 0 0 2px rgba(255,255,255,0.8); }
 
         /* --- REMATCH PANEL --- */
         #rematch-panel {
@@ -261,52 +321,22 @@
         /* --- CHAT SYSTEM --- */
         #chat-container {
             position: absolute; bottom: 20px; left: 20px; width: 350px; max-width: 40%;
-            pointer-events: auto; z-index: 15;
-            font-family: var(--font-ui);
+            pointer-events: auto; z-index: 15; font-family: var(--font-ui);
         }
-        
         #chat-messages {
             max-height: 150px; overflow-y: auto;
             background: var(--chat-bg); border: 1px solid #333;
-            padding: 8px; border-radius: 2px;
-            margin-bottom: 5px;
-            display: block; /* Visible by default like CS:GO */
-            
-            /* Hide Scrollbar for cleaner look */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE 10+ */
+            padding: 8px; border-radius: 2px; margin-bottom: 5px; display: block;
+            scrollbar-width: none; -ms-overflow-style: none;
         }
-        #chat-messages::-webkit-scrollbar { 
-            display: none; /* Chrome/Safari */ 
-        }
-        
-        #chat-input-wrapper {
-            display: none; /* Shown when typing */
-            background: var(--chat-bg); border: 1px solid var(--accent);
-            border-radius: 2px; overflow: hidden;
-        }
-        
-        #chat-input {
-            width: 100%; padding: 10px; background: transparent; border: none;
-            color: #fff; font-family: var(--font-ui); font-size: 0.9rem;
-            outline: none; text-transform: none; letter-spacing: 0.5px;
-        }
+        #chat-messages::-webkit-scrollbar { display: none; }
+        #chat-input-wrapper { display: none; background: var(--chat-bg); border: 1px solid var(--accent); border-radius: 2px; overflow: hidden; }
+        #chat-input { width: 100%; padding: 10px; background: transparent; border: none; color: #fff; font-family: var(--font-ui); font-size: 0.9rem; outline: none; text-transform: none; letter-spacing: 0.5px; }
         #chat-input:focus { box-shadow: none; }
-        
-        .chat-message {
-            margin: 3px 0; font-size: 0.85rem;
-            animation: fadeIn 0.2s ease-out;
-            text-shadow: 0 1px 2px #000;
-        }
+        .chat-message { margin: 3px 0; font-size: 0.85rem; animation: fadeIn 0.2s ease-out; text-shadow: 0 1px 2px #000; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .chat-sender {
-            color: var(--accent); font-weight: bold;
-        }
-        
-        .chat-system {
-            color: #ccc; font-style: italic;
-        }
+        .chat-sender { color: var(--accent); font-weight: bold; }
+        .chat-system { color: #ccc; font-style: italic; }
 
         .hidden { display: none !important; }
         
@@ -315,19 +345,18 @@
             #mobile-controls { display: block; }
             #score-p1, #score-p2 { top: 10px; font-size: 1.2rem; padding: 5px 10px; }
             #killfeed { font-size: 1.8rem; top: 25%; }
-            #ammo-hud { bottom: 100px; right: 170px; } /* Move ammo so it doesn't cover mobile buttons */
+            #ammo-hud { bottom: 100px; right: 170px; }
             #btn-rematch { width: 250px; }
-            /* On mobile, move chat to top-left or adjust so it doesn't block joystick too much */
-            #chat-container { 
-                max-width: 70%; 
-                bottom: auto; 
-                top: 80px; /* Move to top on mobile to avoid joystick overlap */
-                left: 10px; 
-            }
+            #chat-container { max-width: 70%; bottom: auto; top: 80px; left: 10px; }
         }
     </style>
 </head>
 <body>
+
+<!-- LOBBY AUDIO (Loops infinitely) -->
+<audio id="lobby-audio" loop>
+    <source src="https://github.com/i3xp/aimtwo/raw/refs/heads/main/aimtwo_lobby_song.mp3" type="audio/mpeg">
+</audio>
 
 <div id="game-layer"></div>
 
@@ -340,7 +369,6 @@
         
         <div id="killfeed">ELIMINATED</div>
         
-        <!-- Ammo -->
         <div id="ammo-hud">
             <span id="ammo-label">AMMO</span>
             <div id="ammo-count">5/5</div>
@@ -366,7 +394,6 @@
             <div class="scope-data"><span id="dist-val">--</span>m</div>
         </div>
         
-        <!-- Chat System -->
         <div id="chat-container">
             <div id="chat-messages"></div>
             <div id="chat-input-wrapper">
@@ -375,14 +402,12 @@
         </div>
     </div>
 
-    <!-- Mobile Controls -->
     <div id="mobile-controls">
         <div id="joystick-area"><div id="joystick-knob"></div></div>
         <div id="sprint-toggle">SPRINT</div>
         <div id="scope-btn">SCOPE</div>
     </div>
 
-    <!-- Rematch Overlay -->
     <div id="rematch-panel">
         <h2 id="end-msg">GAME OVER</h2>
         <button id="btn-rematch">REQUEST REMATCH</button>
@@ -393,6 +418,35 @@
 <div id="toast-container"></div>
 
 <div id="menu-layer">
+    <!-- Settings Icon (Top Right) -->
+    <div id="settings-btn"><i class="fas fa-cog"></i></div>
+
+    <!-- Autoplay Warning Modal -->
+    <div id="autoplay-warning" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="color:var(--danger)">AUDIO BLOCKED</h2>
+            <p style="color:#ccc; margin-bottom:20px;">Browser policy has blocked autoplay for the lobby music.</p>
+            <p style="color:#fff; margin-bottom:20px;">Click the <i class="fas fa-cog" style="color:var(--accent)"></i> icon in the top right corner to manually enable it or adjust volume.</p>
+            <button id="btn-close-warning">CLOSE</button>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2><i class="fas fa-sliders-h icon"></i>SETTINGS</h2>
+            
+            <div class="volume-control">
+                <i class="fas fa-volume-down"></i>
+                <input type="range" id="vol-slider" class="custom-slider" min="0" max="1" step="0.01" value="0.5">
+                <i class="fas fa-volume-up"></i>
+            </div>
+
+            <button id="btn-mute-toggle">MUTE MUSIC</button>
+            <button id="btn-close-settings" class="btn-red">CLOSE</button>
+        </div>
+    </div>
+
     <div id="panel-main" class="panel">
         <h1>SNIPER OPS</h1>
         <div style="margin-bottom:20px; color:#888; font-size:0.9rem; letter-spacing:1px;">TACTICAL DAYLIGHT OPERATIONS</div>
@@ -410,7 +464,6 @@
         <div style="margin-bottom:10px; color:#888; font-size:0.8rem; letter-spacing:1px;"><i class="fas fa-key icon"></i>ROOM CODE</div>
         <input type="text" id="host-code" readonly style="cursor:pointer; color:var(--accent); font-size:1.4rem; letter-spacing:2px; border-color:var(--accent);">
         
-        <!-- Kill Limit moved to Host Lobby -->
         <div style="margin: 20px 0; padding: 15px; background: #151515; border: 1px solid #333; border-radius: 2px;">
             <div style="font-size:0.8rem; color:#666; margin-bottom:10px; letter-spacing:1px;"><i class="fas fa-bullseye icon"></i>KILL LIMIT</div>
             <input type="number" id="inp-win-score" class="custom-num" value="30" min="10" max="100" style="width:100px; margin:0 auto; padding:10px; display:block;">
@@ -443,7 +496,7 @@
 <script>
 /**
  * AIM2: SNIPER OPS - DAYLIGHT EDITION
- * Updates: Dark UI, Mobile Controls, Score Sync, Smooth Graphics
+ * Updates: Dark UI, Mobile Controls, Score Sync, Smooth Graphics, Chat, Music System
  */
 
 const CFG = { 
@@ -458,7 +511,7 @@ const CFG = {
     tickRate: 30, 
     winScore: 30,
     maxAmmo: 5,
-    reloadTime: 2000, // ms
+    reloadTime: 2000, 
     isMobile: ('ontouchstart' in window) || (navigator.maxTouchPoints > 0)
 };
 
@@ -486,15 +539,51 @@ const State = {
     keys: {},
     score: { me: 0, enemy: 0 },
     mobileSprint: false,
-    scopeButtonHeld: { left: false, right: false }, // Track which mouse button is held
-    chat: {
-        active: false,
-        messages: [],
-        maxMessages: 20
+    scopeButtonHeld: { left: false, right: false }, 
+    chat: { active: false, messages: [], maxMessages: 20 },
+    audio: { muted: false, volume: 0.5 }
+};
+
+// --- AUDIO SYSTEM (Lobby Music) ---
+const LobbyAudio = {
+    el: document.getElementById('lobby-audio'),
+    
+    init: () => {
+        LobbyAudio.el.volume = State.audio.volume;
+        LobbyAudio.el.muted = State.audio.muted;
+        
+        // Attempt autoplay on load
+        const playPromise = LobbyAudio.el.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Autoplay blocked:", error);
+                document.getElementById('autoplay-warning').classList.add('active');
+            });
+        }
+    },
+
+    play: () => {
+        LobbyAudio.el.play().catch(e => console.log("Play blocked:", e));
+    },
+
+    pause: () => {
+        LobbyAudio.el.pause();
+    },
+
+    setVolume: (val) => {
+        State.audio.volume = val;
+        LobbyAudio.el.volume = val;
+    },
+
+    toggleMute: () => {
+        State.audio.muted = !State.audio.muted;
+        LobbyAudio.el.muted = State.audio.muted;
+        return State.audio.muted;
     }
 };
 
-// --- AUDIO SYSTEM (Procedural) ---
+// --- GAME AUDIO SYSTEM (Procedural SFX) ---
 const Sfx = { 
     ctx: null, 
     bufferNoise: null,
@@ -584,18 +673,15 @@ const Gfx = {
 
     init: () => { 
         Gfx.scene = new THREE.Scene(); 
-        Gfx.scene.background = new THREE.Color(0x87CEEB); // Daytime Sky (Kept as requested)
-        // NO FOG
+        Gfx.scene.background = new THREE.Color(0x87CEEB); 
         
         Gfx.camera = new THREE.PerspectiveCamera(85, innerWidth/innerHeight, 0.1, 500); 
         
-        // Optimized Renderer with Anti-aliasing enabled for smoother edges
         Gfx.renderer = new THREE.WebGLRenderer({ 
-            antialias: true, // FIX: Pixelated edges
+            antialias: true, 
             powerPreference: "high-performance" 
         }); 
         
-        // Cap pixel ratio to 2 for mobile to balance smoothness and performance
         const dpr = CFG.isMobile ? Math.min(window.devicePixelRatio, 2) : Math.min(window.devicePixelRatio, 1.5);
         Gfx.renderer.setPixelRatio(dpr); 
         Gfx.renderer.setSize(innerWidth, innerHeight); 
@@ -604,14 +690,13 @@ const Gfx = {
         
         document.getElementById('game-layer').appendChild(Gfx.renderer.domElement); 
         
-        // Brighter Lighting for Daytime
         const amb = new THREE.AmbientLight(0xffffff, 0.8); 
         Gfx.scene.add(amb); 
         
         const dir = new THREE.DirectionalLight(0xffffff, 0.8); 
         dir.position.set(50, 100, 50); 
         dir.castShadow = true;
-        dir.shadow.mapSize.width = 1024; // Increased shadow res for better quality
+        dir.shadow.mapSize.width = 1024; 
         dir.shadow.mapSize.height = 1024;
         dir.shadow.camera.near = 0.5;
         dir.shadow.camera.far = 300;
@@ -646,7 +731,6 @@ const Gfx = {
         const matDarkGrey = new THREE.MeshLambertMaterial({color: 0x555555});
         const matAccent = new THREE.MeshBasicMaterial({color: 0xff9d00}); 
 
-        // Simple Sniper Construct
         const body = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.2, 1.2), matDarkGrey);
         body.position.set(0.2, -0.3, -0.5);
         Gfx.weaponGroup.add(body);
@@ -666,7 +750,6 @@ const Gfx = {
         lens.rotation.y = -Math.PI/2;
         Gfx.weaponGroup.add(lens);
 
-        // Laser Sight
         const laserGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,-100)]);
         const laserMat = new THREE.LineBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
         Gfx.laserLine = new THREE.Line(laserGeo, laserMat);
@@ -683,7 +766,6 @@ const Gfx = {
         const matWall = new THREE.MeshLambertMaterial({color: 0xdddddd}); 
         const matTrim = new THREE.MeshBasicMaterial({color: 0xff9d00}); 
         
-        // Floor
         const floor = new THREE.Mesh(new THREE.PlaneGeometry(300, 300), matFloor); 
         floor.rotation.x = -Math.PI/2; 
         floor.receiveShadow = true;
@@ -697,21 +779,17 @@ const Gfx = {
             Gfx.addColl(m); 
         }; 
 
-        // Outer Walls
         createBox(200, 40, 10, 0, 20, -100, matWall); 
         createBox(200, 40, 10, 0, 20, 100, matWall); 
         createBox(10, 40, 200, -100, 20, 0, matWall); 
         createBox(10, 40, 200, 100, 20, 0, matWall); 
 
-        // Center Structure
         createBox(20, 15, 20, 0, 7.5, 0, matWall); 
         createBox(22, 1, 22, 0, 15.1, 0, matTrim); 
         
-        // Floating Platforms
         createBox(15, 1, 15, 40, 10, 40, matWall);
         createBox(15, 1, 15, -40, 15, -40, matWall);
 
-        // Obstacles
         const pillars = [[-60, 0], [60, 0], [-60, 60], [60, -60], [0, 80], [0, -80]];
         pillars.forEach(p => { 
             createBox(8, 18, 8, p[0], 9, p[1], matWall); 
@@ -826,7 +904,6 @@ const Net = {
             console.error("PeerJS Error:", err);
             let message = "NETWORK ERROR";
             
-            // Handle specific error types with friendly messages
             if(err.type === 'peer-unavailable') {
                 message = "INVALID ROOM CODE";
                 UI.toast(message, "error");
@@ -898,8 +975,6 @@ const Net = {
                     }
                     break; 
                 case 'hit': 
-                    // FIX: When I receive 'hit', it means I was shot.
-                    // Therefore, the ENEMY scored. I update their score locally.
                     if(!State.me.dead && !State.gameOver) {
                         State.score.enemy++;
                         UI.updateScore();
@@ -910,7 +985,7 @@ const Net = {
                     UI.toast("OPPONENT REQUESTED REMATCH");
                     Logic.resetGame(); 
                     break;
-                case 'chat': // Handle chat messages
+                case 'chat': 
                     UI.addChatMessage(data.n, data.m);
                     break;
             } 
@@ -946,6 +1021,11 @@ const UI = {
     showPanel: (id) => {
         document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
+        
+        // Try to resume music when back in menu
+        if(id === 'panel-main') {
+            LobbyAudio.play();
+        }
     },
     toast: (msg, type='info') => {
         const c = document.getElementById('toast-container');
@@ -965,7 +1045,9 @@ const UI = {
         document.getElementById('hud').style.display = 'block'; 
         document.getElementById('rematch-panel').style.display = 'none';
         
-        // Mobile Rotation Attempt
+        // STOP LOBBY MUSIC
+        LobbyAudio.pause();
+        
         if(CFG.isMobile && screen.orientation && screen.orientation.lock) {
             screen.orientation.lock('landscape').catch(e => console.log("Orientation lock prevented"));
         }
@@ -1019,7 +1101,6 @@ const UI = {
         const messagesEl = document.getElementById('chat-messages');
         const wrapper = document.getElementById('chat-input-wrapper');
         
-        // Format message
         const msgEl = document.createElement('div');
         msgEl.className = 'chat-message';
         
@@ -1033,17 +1114,15 @@ const UI = {
         messagesEl.appendChild(msgEl);
         State.chat.messages.push({sender, message});
         
-        // Limit message count
         if(State.chat.messages.length > State.chat.maxMessages) {
             State.chat.messages.shift();
             messagesEl.removeChild(messagesEl.firstChild);
         }
         
-        // Auto-scroll to bottom
         messagesEl.scrollTop = messagesEl.scrollHeight;
         
-        // KEEP MESSAGES VISIBLE (CS:GO Style)
-        // No logic here to hide messages. They stay visible.
+        // Keep messages visible (CS:GO style)
+        messagesEl.style.display = 'block';
     },
     toggleChat: () => {
         if(!State.playing || State.gameOver) return;
@@ -1053,21 +1132,21 @@ const UI = {
         const messages = document.getElementById('chat-messages');
         
         if(!State.chat.active) {
-            // Open chat
             State.chat.active = true;
             inputWrapper.style.display = 'block';
             messages.style.display = 'block';
             input.focus();
-            
-            // Capture all keyboard input
             input.value = '';
         } else {
-            // Close chat
             State.chat.active = false;
             inputWrapper.style.display = 'none';
-            messages.style.display = 'block'; // Messages remain visible
+            messages.style.display = 'block';
             input.blur();
         }
+    },
+    toggleSettings: () => {
+        const modal = document.getElementById('settings-modal');
+        modal.classList.toggle('active');
     }
 }; 
 
@@ -1081,7 +1160,6 @@ const Logic = {
         if(State.playing) { 
             if(!State.gameOver) Logic.physics(dt); 
             
-            // FIX: Update NameTag rotation to look at camera to prevent glitching
             const p = State.players['enemy']; 
             if(p && p.mesh) {
                 p.mesh.position.lerp(p.targetPos, 0.2);
@@ -1135,7 +1213,6 @@ const Logic = {
         const { me, keys } = State; 
         
         const isMoving = (keys['KeyW'] || keys['KeyS'] || keys['KeyA'] || keys['KeyD']);
-        // Check Sprint (Desktop Shift or Mobile Toggle)
         const isSprinting = (State.mobileSprint || keys['ShiftLeft']) && !me.scoped && isMoving && !me.reloading;
         const speed = isSprinting ? CFG.sprintSpeed : CFG.baseSpeed; 
         
@@ -1307,8 +1384,6 @@ const Logic = {
                 UI.showHitMarker();
                 UI.feed(`HIT ${State.enemyName}`); 
                 
-                // FIX: I hit the enemy, so I increment MY score.
-                // I send 'hit' to them so they can increment MY score on THEIR screen.
                 State.score.me++;
                 UI.updateScore();
                 
@@ -1368,7 +1443,6 @@ const Logic = {
         State.gameOver = false;
         UI.updateScore();
         
-        // Clear chat messages on reset
         document.getElementById('chat-messages').innerHTML = '';
         State.chat.messages = [];
         
@@ -1381,19 +1455,20 @@ const Logic = {
 }; 
 
 window.onload = () => { 
+    // Initialize Music
+    LobbyAudio.init();
+
     Gfx.init(); 
     Logic.loop(0); 
     
     // --- DESKTOP INPUTS ---
     window.onkeydown = e => { 
-        // Chat handling (T to open, Escape to close)
         if(e.code === 'KeyT' && State.playing && !State.gameOver && !State.chat.active) {
             e.preventDefault();
             UI.toggleChat();
             return;
         }
         
-        // If chat is active, don't process game keys
         if(State.chat.active) {
             if(e.code === 'Enter') {
                 e.preventDefault();
@@ -1409,7 +1484,7 @@ window.onload = () => {
                 e.preventDefault();
                 UI.toggleChat();
             }
-            return; // Don't process other keys when chat is active
+            return;
         }
         
         State.keys[e.code] = true; 
@@ -1422,7 +1497,6 @@ window.onload = () => {
         }
     }; 
     
-    // Mouse button handling for scope (both left and right click)
     window.onmousedown = e => { 
         if(document.pointerLockElement !== document.body) { 
             if(State.playing && !State.gameOver && document.getElementById('rematch-panel').style.display === 'none') {
@@ -1431,11 +1505,9 @@ window.onload = () => {
             return; 
         } 
         
-        // Handle both left (0) and right (2) mouse buttons for scoping
         if(e.button === 0 || e.button === 2) { 
-            e.preventDefault(); // Prevent context menu on right click
+            e.preventDefault(); 
             
-            // Track which button is being held
             if(e.button === 0) State.scopeButtonHeld.left = true;
             if(e.button === 2) State.scopeButtonHeld.right = true;
             
@@ -1446,15 +1518,12 @@ window.onload = () => {
     }; 
     
     window.onmouseup = e => { 
-        // Handle both left (0) and right (2) mouse buttons for shooting
         if((e.button === 0 || e.button === 2) && State.me.scoped) { 
             e.preventDefault();
             
-            // Track which button is being released
             if(e.button === 0) State.scopeButtonHeld.left = false;
             if(e.button === 2) State.scopeButtonHeld.right = false;
             
-            // Only shoot and unscope if NO scope buttons are still held
             if(!State.scopeButtonHeld.left && !State.scopeButtonHeld.right) {
                 Logic.shoot(); 
                 State.me.scoped = false; 
@@ -1464,15 +1533,12 @@ window.onload = () => {
         } 
     }; 
     
-    // Prevent context menu on right click
     window.oncontextmenu = e => {
         if(State.playing) e.preventDefault();
     };
     
     window.onmousemove = e => { 
         if(document.pointerLockElement !== document.body || State.me.dead || State.gameOver) return; 
-        
-        // Don't process mouse look when chat is active
         if(State.chat.active) return;
         
         const s = State.me.scoped ? CFG.scopeSens : CFG.sens; 
@@ -1481,7 +1547,32 @@ window.onload = () => {
         State.me.rot.x = Math.max(-1.5, Math.min(1.5, State.me.rot.x)); 
     }; 
     
-    // --- MOBILE CONTROLS (JOYSTICK & BUTTONS) ---
+    // --- SETTINGS & AUDIO EVENTS ---
+    document.getElementById('settings-btn').onclick = () => {
+        UI.toggleSettings();
+    };
+
+    document.getElementById('btn-close-warning').onclick = () => {
+        document.getElementById('autoplay-warning').classList.remove('active');
+    };
+
+    document.getElementById('btn-close-settings').onclick = () => {
+        UI.toggleSettings();
+    };
+
+    const volSlider = document.getElementById('vol-slider');
+    volSlider.addEventListener('input', (e) => {
+        LobbyAudio.setVolume(e.target.value);
+    });
+
+    const muteBtn = document.getElementById('btn-mute-toggle');
+    muteBtn.addEventListener('click', () => {
+        const isMuted = LobbyAudio.toggleMute();
+        muteBtn.innerText = isMuted ? "UNMUTE MUSIC" : "MUTE MUSIC";
+        muteBtn.className = isMuted ? "btn-red" : "";
+    });
+
+    // --- MOBILE CONTROLS ---
     const joystick = document.getElementById('joystick-area');
     const knob = document.getElementById('joystick-knob');
     const scopeBtn = document.getElementById('scope-btn');
@@ -1536,7 +1627,6 @@ window.onload = () => {
         
         knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
         
-        // Map to Keys
         const threshold = 10;
         State.keys['KeyW'] = dy < -threshold;
         State.keys['KeyS'] = dy > threshold;
@@ -1544,14 +1634,11 @@ window.onload = () => {
         State.keys['KeyD'] = dx > threshold;
     }
 
-    // Mobile Look (Drag on right side of screen area if not using joystick)
     let lookTouchId = null;
     let lastLookX = 0;
     let lastLookY = 0;
     
-    // Simple touch look for screen area outside controls
     document.getElementById('ui-layer').addEventListener('touchstart', e => {
-        // Ignore touches on controls
         if(e.target.closest('#mobile-controls')) return;
         
         for(let i=0; i<e.changedTouches.length; i++){
@@ -1574,7 +1661,7 @@ window.onload = () => {
                 lastLookX = t.clientX;
                 lastLookY = t.clientY;
                 
-                const s = State.me.scoped ? CFG.scopeSens * 100 : CFG.sens * 100; // Scale for touch
+                const s = State.me.scoped ? CFG.scopeSens * 100 : CFG.sens * 100; 
                 State.me.rot.y -= dx * s;
                 State.me.rot.x -= dy * s;
                 State.me.rot.x = Math.max(-1.5, Math.min(1.5, State.me.rot.x));
@@ -1592,14 +1679,12 @@ window.onload = () => {
     document.getElementById('ui-layer').addEventListener('touchend', endLook);
     document.getElementById('ui-layer').addEventListener('touchcancel', endLook);
 
-    // Sprint Button
     sprintBtn.addEventListener('touchstart', e => {
         e.preventDefault();
         State.mobileSprint = !State.mobileSprint;
         sprintBtn.classList.toggle('active', State.mobileSprint);
     });
 
-    // Scope Button (Hold to Scope, Release to Shoot)
     scopeBtn.addEventListener('touchstart', e => {
         e.preventDefault();
         if(State.playing && !State.gameOver && !State.me.dead) {
@@ -1630,7 +1715,6 @@ window.onload = () => {
     
     document.getElementById('btn-start').onclick = () => { 
         if(State.conn) { 
-            // Get kill limit from lobby input
             CFG.winScore = parseInt(document.getElementById('inp-win-score').value) || 30;
             State.conn.send({ t:'start', ws: CFG.winScore }); 
             UI.startGame(); 
