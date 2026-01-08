@@ -5,28 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- --- SEO & METADATA --- -->
-    <title>AIM2: SNIPER OPS - Free 3D Browser Multiplayer Shooter</title>
-    <meta name="description" content="Engage in tactical 3D sniper warfare with AIM2: SNIPER OPS. A free browser-based multiplayer FPS featuring mobile support, private lobbies, and real-time combat. No download required.">
-    <meta name="keywords" content="sniper game, 3d shooter, browser game, multiplayer fps, webgl, tactical ops, first person shooter, no download, mobile game, peer to peer">
+    <title>AIM2: SNIPER OPS - Multiplayer</title>
+    <meta name="description" content="Engage in tactical 3D sniper warfare with AIM2: SNIPER OPS.">
+    <meta name="keywords" content="sniper game, 3d shooter, browser game, multiplayer fps, webgl, tactical ops">
     
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://i3xp.github.io/aimtwo/">
-    <meta property="og:title" content="AIM2: SNIPER OPS - 3D Multiplayer game in your browser!">
-    <meta property="og:description" content="Enter the arena. Host matches, scope targets, and eliminate enemies in this fast-paced 3D browser sniper game. Play on Mobile or PC now.">
+    <meta property="og:title" content="AIM2: SNIPER OPS - 3D Multiplayer">
+    <meta property="og:description" content="Tactical 3D browser sniper game.">
     <meta property="og:image" content="https://raw.githubusercontent.com/i3xp/aimtwo/refs/heads/main/aimtwo%20logo.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AIM2: SNIPER OPS - 3D Multiplayer game in your browser!">
-    <meta name="twitter:description" content="Enter the arena. Host matches, scope targets, and eliminate enemies in this fast-paced 3D browser sniper game.">
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/i3xp/aimtwo/refs/heads/main/aimtwo%20logo.png">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Chakra+Petch:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for Icons -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -35,7 +26,7 @@
             --bg-ui: #050505; 
             --panel: rgba(10, 10, 10, 0.98); 
             --panel-border: #333;
-            --accent: #ff9d00; /* Amber */
+            --accent: #ff9d00; 
             --text: #e0e0e0;
             --danger: #d63031;
             --success: #2ecc71;
@@ -142,11 +133,13 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             background: linear-gradient(135deg, #050505 0%, #111 100%);
+            overflow-y: auto;
+            padding: 20px 0;
         }
 
         .panel {
             background: var(--panel); border: 1px solid var(--panel-border); 
-            padding: 30px; width: 90%; max-width: 450px; text-align: center; 
+            padding: 30px; width: 90%; max-width: 500px; text-align: center; 
             box-shadow: 0 0 30px rgba(0,0,0,0.8);
             border-radius: 2px; 
             border-top: 4px solid var(--accent);
@@ -177,16 +170,13 @@
         input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(255, 157, 0, 0.2); background: #222; }
         input[readonly] { color: var(--accent); font-family: monospace; font-size: 1.4rem; letter-spacing: 3px; border-color: var(--accent); background: #0f0f0f; }
         
-        /* HIDE NUMBER INPUT SPINNERS */
         input[type=number] {
             -moz-appearance: textfield;
-            appearance: textfield;
             font-family: var(--font-ui);
         }
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
+            -webkit-appearance: none; margin: 0; 
         }
         
         button { 
@@ -200,6 +190,46 @@
                 
         .btn-red { border-color: var(--danger); color: var(--danger); background: #1a0505; }
         .btn-red:hover { background: var(--danger); color: white; box-shadow: 0 0 20px rgba(214, 48, 49, 0.4); }
+
+        /* --- LOBBY LIST --- */
+        #public-rooms-container {
+            margin-bottom: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            background: rgba(0,0,0,0.3);
+            text-align: left;
+            padding: 10px;
+            font-family: var(--font-ui);
+            font-size: 0.8rem;
+        }
+        .room-item {
+            padding: 8px;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .room-item:hover { background: rgba(255,157,0,0.1); }
+        .room-info { display: flex; flex-direction: column; }
+        .room-name { font-weight: bold; color: #fff; }
+        .room-meta { color: #888; font-size: 0.75rem; }
+
+        #lobby-players-list {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+            text-align: left;
+            font-family: var(--font-ui);
+            color: #ccc;
+        }
+        #lobby-players-list li {
+            padding: 5px 10px;
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+        }
 
         /* --- FOOTER --- */
         .footer { margin-top: 20px; font-size: 0.8rem; color: #666; font-family: var(--font-ui); }
@@ -483,7 +513,7 @@
         <div class="modal-content">
             <h2 style="color:var(--danger)">AUDIO BLOCKED</h2>
             <p style="color:#ccc; margin-bottom:20px;">Browser policy has blocked autoplay for the lobby music.</p>
-            <p style="color:#fff; margin-bottom:20px;">Click the <i class="fas fa-cog" style="color:var(--accent)"></i> icon in the top right corner to manually enable it or adjust volume.</p>
+            <p style="color:#fff; margin-bottom:20px;">Click the <i class="fas fa-cog" style="color:var(--accent)"></i> icon to manually enable it.</p>
             <button id="btn-close-warning">CLOSE</button>
         </div>
     </div>
@@ -506,14 +536,25 @@
 
     <div id="panel-main" class="panel">
         <h1>SNIPER OPS</h1>
-        <div style="margin-bottom:20px; color:#888; font-size:0.9rem; letter-spacing:1px;">TACTICAL DAYLIGHT OPERATIONS</div>
+        <div style="margin-bottom:20px; color:#888; font-size:0.9rem; letter-spacing:1px;">TACTICAL OPS v2.1</div>
         <input type="text" id="inp-name" placeholder="OPERATOR NAME" maxlength="12" value="">
         <button id="btn-host"><i class="fas fa-play icon"></i>HOST MATCH</button>
-        <button id="btn-join"><i class="fas fa-sign-in-alt icon"></i>JOIN MATCH</button>
+        <button id="btn-join-public"><i class="fas fa-globe icon"></i>BROWSE LOBBIES</button>
+        <button id="btn-join-code"><i class="fas fa-key icon"></i>JOIN BY CODE</button>
         
         <div class="footer">
             Join our <a href="https://discord.gg/ZCG4hB2HHp" target="_blank">Discord Server</a>
         </div>
+    </div>
+
+    <div id="panel-browse" class="panel hidden">
+        <h2><i class="fas fa-globe icon"></i>BROWSE LOBBIES</h2>
+        <div style="font-size:0.7rem; color:#888; margin-bottom:10px;">PUBLIC SERVER STATUS MAY VARY. USE CODE IF UNRELIABLE.</div>
+        <button id="btn-refresh-rooms"><i class="fas fa-sync icon"></i>REFRESH LIST</button>
+        <div id="public-rooms-container">
+            <div style="padding:10px; color:#666; text-align:center;">Click refresh to find lobbies</div>
+        </div>
+        <button id="btn-back-browse" class="btn-red"><i class="fas fa-arrow-left icon"></i>BACK</button>
     </div>
 
     <div id="panel-host" class="panel hidden">
@@ -521,25 +562,28 @@
         <div style="margin-bottom:10px; color:#888; font-size:0.8rem; letter-spacing:1px;"><i class="fas fa-key icon"></i>ROOM CODE</div>
         <input type="text" id="host-code" readonly style="cursor:pointer; color:var(--accent); font-size:1.4rem; letter-spacing:2px; border-color:var(--accent);">
         
-        <div style="margin: 20px 0; padding: 15px; background: #151515; border: 1px solid #333; border-radius: 2px;">
-            <div style="font-size:0.8rem; color:#666; margin-bottom:10px; letter-spacing:1px;"><i class="fas fa-bullseye icon"></i>KILL LIMIT</div>
-            <input type="number" id="inp-win-score" value="30" min="10" max="100" style="width:100px; margin:0 auto; padding:10px; display:block;">
-        </div>
-        
-        <div style="margin: 20px 0; padding: 15px; background: #151515; border: 1px solid #333; border-radius: 2px;">
-            <div style="font-size:0.8rem; color:#666; margin-bottom:5px; letter-spacing:1px;"><i class="fas fa-users icon"></i>OPERATIVES</div>
-            <div id="lobby-list" style="font-weight:bold; text-align:left; padding-left: 10px; font-family: var(--font-ui);">
-                <div id="lobby-host-name" style="color:var(--accent);">HOST: ...</div>
-                <div id="lobby-client-name" style="color:#444; margin-top:5px;">WAITING FOR PLAYER...</div>
+        <div style="display: flex; gap: 10px; justify-content: space-between;">
+            <div style="width:48%">
+                <div style="font-size:0.8rem; color:#666; margin-bottom:5px; letter-spacing:1px;"><i class="fas fa-bullseye icon"></i>KILL LIMIT</div>
+                <input type="number" id="inp-win-score" value="30" min="10" max="100" style="padding:10px;">
+            </div>
+            <div style="width:48%">
+                <div style="font-size:0.8rem; color:#666; margin-bottom:5px; letter-spacing:1px;"><i class="fas fa-users icon"></i>MAX PLAYERS</div>
+                <input type="number" id="inp-max-players" value="2" min="2" max="4" style="padding:10px;">
             </div>
         </div>
+        
+        <ul id="lobby-players-list">
+            <!-- Populated by JS -->
+        </ul>
 
         <button id="btn-start" disabled><i class="fas fa-satellite-dish icon"></i>DEPLOY</button>
         <button id="btn-back" class="btn-red"><i class="fas fa-times icon"></i>EXIT</button>
     </div>
 
     <div id="panel-join" class="panel hidden">
-        <h2><i class="fas fa-sign-in-alt icon"></i>JOIN ROOM</h2>
+        <h2><i class="fas fa-key icon"></i>JOIN ROOM</h2>
+        <div style="margin-bottom:10px; color:#888; font-size:0.8rem; letter-spacing:1px;">ENTER HOST CODE</div>
         <input type="text" id="inp-code" placeholder="ENTER ROOM CODE" maxlength="40">
         <button id="btn-connect"><i class="fas fa-plug icon"></i>CONNECT</button>
         <div id="client-status" style="margin-top:15px; color:#888; font-size:0.8rem; min-height:20px;"></div>
@@ -565,15 +609,21 @@ const CFG = {
     scopeSens: 0.0004, 
     tickRate: 30, 
     winScore: 30,
+    maxPlayers: 2, // Default, overridden by host
     maxAmmo: 5,
     reloadTime: 2000, 
     isMobile: ('ontouchstart' in window) || (navigator.maxTouchPoints > 0)
 };
 
 const State = { 
-    isHost: false, conn: null, peer: null, 
-    playing: false, gameOver: false, 
-    myName: "ALPHA", enemyName: "BRAVO", 
+    isHost: false, 
+    connections: {}, // Changed to support multiple players
+    peer: null, 
+    peerId: null,
+    playing: false, 
+    gameOver: false, 
+    myName: "ALPHA", 
+    hostName: "HOST", 
     me: { 
         pos: new THREE.Vector3(0,50,0), 
         vel: new THREE.Vector3(), 
@@ -588,17 +638,35 @@ const State = {
     headBobTimer: 0, 
     weaponSway: new THREE.Vector2(),
     recoil: 0,
-    players: {}, 
+    players: {}, // Stores mesh and data for OTHER players: { id: { mesh, targetPos, dead, name } }
     lastFrame: 0, 
     lastTick: 0, 
     keys: {},
-    score: { me: 0, enemy: 0 },
+    score: { me: 0 }, // Only tracking own score for simplicity, or map of id -> score?
+    // For FFA/Party, we need a map of scores. Host will manage truth.
+    scores: {}, 
     mobileSprint: false,
     scopeButtonHeld: { left: false, right: false }, 
     chat: { active: false, messages: [], maxMessages: 20 },
     audio: { muted: false, volume: 0.5 },
     rematchState: 'IDLE' 
 };
+
+// --- SPAWN POINTS (Expanded) ---
+const SPAWN_POINTS = [
+    new THREE.Vector3(-80, 5, -80), 
+    new THREE.Vector3(80, 5, 80), 
+    new THREE.Vector3(-80, 5, 80), 
+    new THREE.Vector3(80, 5, -80),
+    new THREE.Vector3(0, 5, -90),
+    new THREE.Vector3(0, 5, 90),
+    new THREE.Vector3(-90, 5, 0),
+    new THREE.Vector3(90, 5, 0),
+    new THREE.Vector3(-60, 15, -60),
+    new THREE.Vector3(60, 15, 60),
+    new THREE.Vector3(60, 15, -60),
+    new THREE.Vector3(-60, 15, 60)
+];
 
 // --- AUDIO SYSTEM ---
 const LobbyAudio = {
@@ -712,7 +780,6 @@ const Gfx = {
     init: () => { 
         Gfx.scene = new THREE.Scene(); 
         Gfx.scene.background = new THREE.Color(0x87CEEB); 
-        // FOG REMOVED AS REQUESTED
         
         Gfx.camera = new THREE.PerspectiveCamera(85, innerWidth/innerHeight, 0.1, 500); 
         
@@ -840,7 +907,7 @@ const Gfx = {
 
     addColl: (mesh) => { Gfx.scene.add(mesh); Gfx.colliders.push(mesh); }, 
 
-    createPlayer: () => { 
+    createPlayerMesh: (id, name) => { 
         const g = new THREE.Group(); 
         const b = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.9, 1.0), new THREE.MeshLambertMaterial({color: 0x333333})); 
         b.position.y = 0.95; 
@@ -849,10 +916,10 @@ const Gfx = {
         h.position.y = 2.1; 
         g.add(b,h); 
         
-        const nameSprite = Gfx.createNameSprite(State.enemyName); 
+        const nameSprite = Gfx.createNameSprite(name); 
         nameSprite.position.y = 3.0; 
         g.add(nameSprite); 
-        g.userData.nameTag = nameSprite; 
+        g.userData = { id, nameTag: nameSprite }; 
         Gfx.scene.add(g); 
         return g; 
     }, 
@@ -915,136 +982,254 @@ const Net = {
         State.peer = new Peer(); 
         
         State.peer.on('open', id => { 
+            State.peerId = id;
             if(role === 'host') { 
                 State.isHost = true; 
-                CFG.winScore = parseInt(document.getElementById('inp-win-score').value) || 30; 
+                CFG.winScore = parseInt(document.getElementById('inp-win-score').value) || 30;
+                CFG.maxPlayers = parseInt(document.getElementById('inp-max-players').value) || 2;
+                State.scores[id] = 0; // Host score
+                
                 document.getElementById('target-score-display').innerText = CFG.winScore;
                 document.getElementById('host-code').value = id; 
                 
-                document.getElementById('lobby-host-name').innerText = "HOST: " + State.myName;
-
+                UI.updateLobbyList(id, State.myName, true);
                 UI.showPanel('panel-host');
                 
                 State.peer.on('connection', conn => { 
-                    State.conn = conn; 
-                    Net.setup(); 
+                    Net.handleConnection(conn); 
                 }); 
-            } else { 
-                const code = document.getElementById('inp-code').value.trim(); 
-                if(!code) return UI.toast("ENTER ROOM CODE", "error");
-                document.getElementById('btn-connect').innerText = "CONNECTING..."; 
-                document.getElementById('btn-connect').disabled = true;
-                State.conn = State.peer.connect(code); 
-                Net.setup(); 
             } 
-        });
+        }); 
         
         State.peer.on('error', err => {
-            console.error("PeerJS Error:", err);
-            let message = "NETWORK ERROR";
-            if(err.type === 'peer-unavailable') message = "INVALID ROOM CODE";
-            else if(err.type === 'disconnected') message = "CONNECTION LOST";
+            console.error(err);
+            let msg = "NETWORK ERROR";
+            if(err.type === 'peer-unavailable') msg = "ROOM NOT FOUND";
+            else if(err.type === 'disconnected') msg = "SERVER DISCONNECTED";
+            else if(err.type === 'unavailable-id') msg = "ID TAKEN";
+            else if(err.type === 'ssl-unavailable') msg = "SSL REQUIRED";
             
-            UI.toast(message, "error");
-            if(role === 'client') {
-                document.getElementById('btn-connect').innerText = "CONNECT";
-                document.getElementById('btn-connect').disabled = false;
-            }
+            UI.toast(msg, "error");
         });
     }, 
-    
-    setup: () => { 
-        State.conn.on('open', () => { 
-            State.conn.send({ t:'name', n: State.myName }); 
+
+    handleConnection: (conn) => {
+        const peerId = conn.peer;
+        
+        // Max Player Check (Host Only)
+        if(State.isHost) {
+            const currentPlayers = Object.keys(State.connections).length + 1; // +1 for host
+            if(currentPlayers >= CFG.maxPlayers) {
+                conn.send({ t: 'error', m: 'PARTY FULL' });
+                conn.close();
+                UI.toast(`Connection rejected: Party full (${CFG.maxPlayers})`, "error");
+                return;
+            }
+        }
+
+        conn.on('open', () => { 
+            console.log("Connected to: " + peerId);
+            State.connections[peerId] = conn;
             
+            // Send Welcome Packet
+            conn.send({ 
+                t: 'welcome', 
+                id: State.peerId, 
+                name: State.myName, 
+                ws: CFG.winScore, 
+                mp: CFG.maxPlayers,
+                // If host, send list of existing players
+                players: State.isHost ? Net.getPlayerList() : []
+            }); 
+            
+            // If Host, update everyone about the new player
             if(State.isHost) {
-                document.getElementById('btn-start').disabled = false;
-                document.getElementById('btn-start').innerText = "DEPLOY";
-            } else {
-                document.getElementById('panel-join').innerHTML = "<h2>CONNECTED</h2><div style='color:#00ffcc; margin-top:20px; font-size:1.2rem'>WAITING FOR HOST...</div>";
+                UI.updateLobbyListUI();
             }
         }); 
         
-        State.conn.on('data', data => { 
-            switch(data.t) { 
-                case 'name': 
-                    State.enemyName = data.n; 
-                    if(State.isHost) {
-                        document.getElementById('lobby-client-name').innerText = "GUEST: " + State.enemyName;
-                        document.getElementById('lobby-client-name').style.color = "#fff";
-                        UI.toast(State.enemyName + " JOINED");
-                    }
-                    break; 
-                case 'start': 
-                    CFG.winScore = data.ws; 
-                    document.getElementById('target-score-display').innerText = CFG.winScore; 
-                    UI.startGame(); 
-                    break; 
-                case 'm': 
-                    if(!State.players['enemy']) State.players['enemy'] = { mesh: Gfx.createPlayer(), targetPos: new THREE.Vector3(), dead: false }; 
-                    const en = State.players['enemy']; 
-                    en.targetPos.copy(data.p); 
-                    en.mesh.rotation.y = data.r; 
-                    en.mesh.visible = !data.d;  
-                    en.dead = data.d; 
-                    break; 
-                case 's': 
-                    Gfx.tracer(data.o, data.d); 
-                    Sfx.play('shoot'); 
-                    if(State.players['enemy'] && State.players['enemy'].mesh) {
-                        const flash = new THREE.PointLight(0xffaa00, 0.5, 10);
-                        flash.position.copy(data.o);
-                        Gfx.scene.add(flash);
-                        setTimeout(() => Gfx.scene.remove(flash), 50);
-                    }
-                    break; 
-                case 'hit': 
-                    if(!State.me.dead && !State.gameOver) {
-                        State.score.enemy++;
-                        UI.updateScore();
-                        Logic.die();
-                    }
-                    break; 
-                case 'end': 
-                    Logic.endGame(data.winner === State.myName); 
-                    break;
-                case 'rematch_req':
-                    UI.handleRematchRequest();
-                    break;
-                case 'rematch_acc':
-                    UI.handleRematchAccept();
-                    break;
-                case 'rematch_dec':
-                    UI.handleRematchDecline();
-                    break;
-                case 'chat': 
-                    UI.addChatMessage(data.n, data.m);
-                    break;
-            } 
+        conn.on('data', data => { 
+            Net.processData(data, peerId); 
         }); 
         
-        State.conn.on('close', () => {
-            UI.toast("CONNECTION LOST", "error");
-            State.playing = false;
-            setTimeout(() => location.reload(), 2000);
+        conn.on('close', () => {
+            delete State.connections[peerId];
+            if(State.players[peerId]) {
+                Gfx.scene.remove(State.players[peerId].mesh);
+                delete State.players[peerId];
+            }
+            if(State.playing) {
+                UI.toast("PLAYER DISCONNECTED", "info");
+            } else if (State.isHost) {
+                UI.updateLobbyListUI();
+            }
         });
-    }, 
-    
-    broadcast: () => { 
-        if(!State.conn || !State.playing) return; 
-        const now = performance.now(); 
-        if(now - State.lastTick < (1000 / CFG.tickRate)) return; 
-        State.lastTick = now; 
         
-        State.conn.send({ 
-            t: 'm', p: State.me.pos, r: State.me.rot.y, 
-            d: State.me.dead 
-        }); 
+        conn.on('error', (err) => {
+             console.error("Connection Error:", err);
+             UI.toast("CONNECTION ERROR", "error");
+        });
     },
     
+    getPlayerList: () => {
+        const list = {};
+        list[State.peerId] = { n: State.myName, s: State.scores[State.peerId] || 0 };
+        for(let pid in State.connections) {
+            if(State.players[pid]) {
+                list[pid] = { n: State.players[pid].name, s: State.scores[pid] || 0 };
+            }
+        }
+        return list;
+    },
+    
+    processData: (data, senderId) => {
+        // If host, relay data to other clients (excluding sender)
+        if(State.isHost) {
+            // Attach sender ID if not present
+            if(!data.from) data.from = senderId;
+            for(let pid in State.connections) {
+                if(pid !== senderId) {
+                    State.connections[pid].send(data);
+                }
+            }
+        }
+
+        // Process Logic
+        switch(data.t) { 
+            case 'error': 
+                UI.toast(data.m, "error");
+                break;
+            case 'welcome': 
+                // If I am client, this is from Host
+                if(!State.isHost) {
+                    State.hostName = data.name;
+                    CFG.winScore = data.ws;
+                    CFG.maxPlayers = data.mp;
+                    document.getElementById('target-score-display').innerText = CFG.winScore;
+                    
+                    // Add Host to players list
+                    if(data.id !== State.peerId) {
+                         State.players[data.id] = { name: data.name, mesh: null, targetPos: new THREE.Vector3(), dead: false };
+                    }
+
+                    // Add other players
+                    if(data.players) {
+                        for(let pid in data.players) {
+                            if(pid !== State.peerId) {
+                                const pInfo = data.players[pid];
+                                State.players[pid] = { 
+                                    name: pInfo.n, 
+                                    mesh: null, // Will create on game start or now
+                                    targetPos: new THREE.Vector3(), 
+                                    dead: false 
+                                };
+                            }
+                        }
+                    }
+                    
+                    // Send my name back
+                    State.connections[senderId].send({ t:'name', n: State.myName });
+                    
+                    UI.updateLobbyListUI();
+                    UI.toast("CONNECTED TO LOBBY");
+                }
+                break; 
+            case 'name': 
+                if(State.isHost) {
+                    if(!State.players[data.from]) State.players[data.from] = {};
+                    State.players[data.from].name = data.n;
+                    UI.updateLobbyListUI();
+                    UI.toast(`${data.n} JOINED`);
+                    // Broadcast updated player list to everyone
+                    Net.broadcast({ t:'update_players', p: Net.getPlayerList() });
+                } else {
+                    // Update local player name cache
+                    if(State.players[data.from]) State.players[data.from].name = data.n;
+                    UI.updateLobbyListUI();
+                }
+                break;
+            case 'update_players':
+                if(!State.isHost) {
+                    for(let pid in data.p) {
+                         if(pid !== State.peerId) {
+                             const pInfo = data.p[pid];
+                             if(!State.players[pid]) {
+                                 State.players[pid] = { mesh: null, targetPos: new THREE.Vector3(), dead: false };
+                             }
+                             State.players[pid].name = pInfo.n;
+                         }
+                    }
+                    UI.updateLobbyListUI();
+                }
+                break;
+            case 'start': 
+                CFG.winScore = data.ws; 
+                document.getElementById('target-score-display').innerText = CFG.winScore; 
+                UI.startGame(); 
+                break; 
+            case 'm': // Move
+                if(!State.players[data.from] && !State.gameOver) {
+                    State.players[data.from] = { 
+                        mesh: Gfx.createPlayerMesh(data.from, "UNKNOWN"), 
+                        targetPos: new THREE.Vector3(), 
+                        dead: false 
+                    }; 
+                }
+                const p = State.players[data.from]; 
+                if(p && p.mesh) {
+                    p.targetPos.copy(data.p); 
+                    p.mesh.rotation.y = data.r; 
+                    p.mesh.visible = !data.d;  
+                    p.dead = data.d;
+                }
+                break; 
+            case 's': // Shoot
+                Gfx.tracer(data.o, data.d); 
+                Sfx.play('shoot'); 
+                const flash = new THREE.PointLight(0xffaa00, 0.5, 10);
+                flash.position.copy(data.o);
+                Gfx.scene.add(flash);
+                setTimeout(() => Gfx.scene.remove(flash), 50);
+                break; 
+            case 'hit': 
+                // Target is 'data.v' (victim)
+                if(data.v === State.peerId && !State.me.dead && !State.gameOver) {
+                    State.score.me++; 
+                    Logic.die();
+                }
+                break; 
+            case 'kill': // Broadcast kill: k=killer, v=victim
+                // Update scoreboard
+                if(State.scores[data.k] !== undefined) State.scores[data.k]++;
+                UI.updateScore();
+                break;
+            case 'end': 
+                Logic.endGame(data.winner === State.peerId); 
+                break;
+            case 'rematch_req':
+                UI.handleRematchRequest();
+                break;
+            case 'rematch_acc':
+                UI.handleRematchAccept();
+                break;
+            case 'rematch_dec':
+                UI.handleRematchDecline();
+                break;
+            case 'chat': 
+                UI.addChatMessage(data.n, data.m);
+                break;
+        } 
+    }, 
+    
+    broadcast: (data) => { 
+        // Send to all connected peers
+        for(let pid in State.connections) {
+            State.connections[pid].send(data);
+        }
+    }, 
+    
     sendChat: (message) => {
-        if(!State.conn) return;
-        State.conn.send({ t: 'chat', n: State.myName, m: message });
+        Net.broadcast({ t: 'chat', n: State.myName, m: message });
     }
 }; 
 
@@ -1082,26 +1267,74 @@ const UI = {
         State.playing = true; 
         State.gameOver = false;
         State.rematchState = 'IDLE';
+        State.scores = {}; 
+        State.scores[State.peerId] = 0;
         
+        // Initialize scores for known players
+        for(let pid in State.players) {
+            State.scores[pid] = 0;
+            // Create meshes if not exists
+            if(!State.players[pid].mesh) {
+                State.players[pid].mesh = Gfx.createPlayerMesh(pid, State.players[pid].name || "ENEMY");
+            }
+        }
+
         if(!CFG.isMobile) document.body.requestPointerLock(); 
         
-        UI.updateScoreNames();
+        UI.updateScore();
         UI.updateAmmo();
         
         Logic.spawn(); 
         UI.toast("MATCH STARTED");
     }, 
     
-    updateScoreNames: () => {
-        document.getElementById('score-p1').innerText = `${State.myName}: 0`;
-        document.getElementById('score-p2').innerText = `${State.enemyName}: 0`;
+    updateLobbyList: (id, name, isHost) => {
+        UI.updateLobbyListUI();
+    },
+
+    updateLobbyListUI: () => {
+        const list = document.getElementById('lobby-players-list');
+        list.innerHTML = '';
+        
+        // Add Host
+        const liHost = document.createElement('li');
+        liHost.innerHTML = `<span><i class="fas fa-crown icon"></i> ${State.isHost ? State.myName : State.hostName} (HOST)</span>`;
+        list.appendChild(liHost);
+
+        // Add others
+        for(let pid in State.players) {
+            const p = State.players[pid];
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${p.name}</span>`;
+            list.appendChild(li);
+        }
+        
+        // Add self (if client)
+        if(!State.isHost) {
+            const liMe = document.createElement('li');
+            liMe.innerHTML = `<span style="color:var(--accent)">YOU</span>`;
+            list.appendChild(liMe);
+        }
+
+        // Enable Start Button for Host if players > 1
+        if(State.isHost) {
+            const count = Object.keys(State.players).length;
+            document.getElementById('btn-start').disabled = count < 1; 
+            document.getElementById('btn-start').innerText = count < 1 ? "WAITING FOR PLAYERS..." : "DEPLOY";
+        }
     },
     
     updateScore: () => { 
-        const p1 = State.score.me;
-        const p2 = State.score.enemy;
-        document.getElementById('score-p1').innerText = `${State.myName}: ${p1}`;
-        document.getElementById('score-p2').innerText = `${State.enemyName}: ${p2}`;
+        const myScore = State.scores[State.peerId] || 0;
+        document.getElementById('score-p1').innerText = `YOU: ${myScore}`;
+        
+        let topEnemy = 0;
+        for(let pid in State.scores) {
+            if(pid !== State.peerId) {
+                if(State.scores[pid] > topEnemy) topEnemy = State.scores[pid];
+            }
+        }
+        document.getElementById('score-p2').innerText = `BEST ENEMY: ${topEnemy}`;
     }, 
     
     updateAmmo: () => {
@@ -1123,7 +1356,7 @@ const UI = {
         el.innerText = text; 
         el.style.opacity = 1; 
         setTimeout(() => { if(!State.gameOver) el.style.opacity = 0; }, 2000); 
-    },
+    }, 
     
     showHitMarker: () => {
         const hm = document.getElementById('hitmarker');
@@ -1225,7 +1458,7 @@ const UI = {
 
     requestRematch: () => {
         State.rematchState = 'REQUESTING';
-        State.conn.send({ t: 'rematch_req' });
+        Net.broadcast({ t: 'rematch_req' });
         
         const rematchBtn = document.getElementById('btn-end-rematch');
         const statusMsg = document.getElementById('rematch-status-msg');
@@ -1237,13 +1470,13 @@ const UI = {
 
     acceptRematch: () => {
         if(State.rematchState !== 'RECEIVED') return;
-        State.conn.send({ t: 'rematch_acc' });
+        Net.broadcast({ t: 'rematch_acc' });
         Logic.resetGame();
     },
 
     declineRematch: () => {
         if(State.rematchState !== 'RECEIVED') return;
-        State.conn.send({ t: 'rematch_dec' });
+        Net.broadcast({ t: 'rematch_dec' });
         
         const acceptContainer = document.getElementById('accept-decline-container');
         const statusMsg = document.getElementById('rematch-status-msg');
@@ -1280,28 +1513,43 @@ const Logic = {
         if(State.playing) { 
             if(!State.gameOver) Logic.physics(dt); 
             
-            const p = State.players['enemy']; 
-            if(p && p.mesh) {
-                p.mesh.position.lerp(p.targetPos, 0.2);
-                if(p.mesh.userData.nameTag) {
-                    p.mesh.userData.nameTag.lookAt(Gfx.camera.position);
+            for(let pid in State.players) {
+                const p = State.players[pid];
+                if(p && p.mesh) {
+                    p.mesh.position.lerp(p.targetPos, 0.2);
+                    if(p.mesh.userData.nameTag) {
+                        p.mesh.userData.nameTag.lookAt(Gfx.camera.position);
+                    }
                 }
             }
             
             Gfx.updateParticles(dt);
             Gfx.renderer.render(Gfx.scene, Gfx.camera); 
             
-            if(!State.gameOver) Net.broadcast(); 
+            if(!State.gameOver) Net.broadcast({ t: 'm', p: State.me.pos, r: State.me.rot.y, d: State.me.dead }); 
         } 
     }, 
     
     spawn: () => { 
-        const spawns = [ 
-            new THREE.Vector3(-80, 5, -80), new THREE.Vector3(80, 5, 80), 
-            new THREE.Vector3(-80, 5, 80), new THREE.Vector3(80, 5, -80) 
-        ]; 
-        const pt = spawns[Math.floor(Math.random() * spawns.length)]; 
-        State.me.pos.copy(pt); 
+        // Safe Spawn Logic
+        let attempts = 0;
+        let safeSpawn = SPAWN_POINTS[Math.floor(Math.random() * SPAWN_POINTS.length)];
+        
+        while(attempts < 10) {
+            let safe = true;
+            for(let pid in State.players) {
+                const p = State.players[pid];
+                if(p && !p.dead && p.mesh && p.mesh.position.distanceTo(safeSpawn) < 30) {
+                    safe = false;
+                    break;
+                }
+            }
+            if(safe) break;
+            safeSpawn = SPAWN_POINTS[Math.floor(Math.random() * SPAWN_POINTS.length)];
+            attempts++;
+        }
+
+        State.me.pos.copy(safeSpawn); 
         State.me.vel.set(0,0,0); 
         State.me.onGround = false; 
         State.me.dead = false; 
@@ -1455,7 +1703,11 @@ const Logic = {
         if(me.scoped && Gfx.laserLine) {
             Gfx.laserLine.visible = true;
             const laserRay = new THREE.Raycaster(Gfx.camera.position, Gfx.camera.getWorldDirection(new THREE.Vector3()));
-            const hits = laserRay.intersectObjects([...Gfx.colliders, State.players['enemy']?.mesh].filter(x=>x));
+            const obstacles = [...Gfx.colliders];
+            for(let pid in State.players) {
+                if(State.players[pid].mesh) obstacles.push(State.players[pid].mesh);
+            }
+            const hits = laserRay.intersectObjects(obstacles);
             if(hits.length > 0) {
                 const dist = hits[0].distance;
                 Gfx.laserLine.scale.z = dist / 100;
@@ -1465,11 +1717,16 @@ const Logic = {
         }
 
         if(me.scoped) { 
-            const p = State.players['enemy']; 
-            if(p && p.mesh) { 
-                const d = me.pos.distanceTo(p.mesh.position).toFixed(0);
-                document.getElementById('dist-val').innerText = d;
-            } 
+            let minDist = 999;
+            for(let pid in State.players) {
+                const p = State.players[pid];
+                if(p && p.mesh && !p.dead) {
+                    const d = me.pos.distanceTo(p.mesh.position);
+                    if(d < minDist) minDist = d;
+                }
+            }
+            if(minDist < 999) document.getElementById('dist-val').innerText = minDist.toFixed(0);
+            else document.getElementById('dist-val').innerText = "--";
         } 
     }, 
     
@@ -1491,39 +1748,45 @@ const Logic = {
         const ray = new THREE.Raycaster(); 
         ray.setFromCamera({x:0, y:0}, Gfx.camera); 
         
-        const gunPos = Gfx.camera.position.clone().add(new THREE.Vector3(0.3, -0.3, 0.5).applyQuaternion(Gfx.camera.quaternion)); 
-        const end = new THREE.Vector3().copy(Gfx.camera.position).add(ray.ray.direction.clone().multiplyScalar(300)); 
+        const start = Gfx.camera.position.clone(); 
+        const end = new THREE.Vector3().copy(start).add(ray.ray.direction.clone().multiplyScalar(300)); 
         
-        Gfx.tracer(gunPos, end); 
-        State.conn.send({ t:'s', o: gunPos, d: end }); 
+        Gfx.tracer(start, end); 
+        Net.broadcast({ t:'s', o: start, d: end }); 
         
         const obstacles = [...Gfx.colliders]; 
-        const p = State.players['enemy']; 
-        if(p && p.mesh && !p.dead) obstacles.push(p.mesh); 
+        for(let pid in State.players) {
+            if(State.players[pid].mesh) obstacles.push(State.players[pid].mesh);
+        }
         const hits = ray.intersectObjects(obstacles, true); 
         
         if(hits.length > 0) { 
-            let hitEnemy = false; 
+            let hitEnemyId = null;
             let obj = hits[0].object; 
             while(obj.parent && obj.parent.type !== 'Scene') { 
-                if(obj.parent === p.mesh) { hitEnemy = true; break; } 
+                if(obj.userData && obj.userData.id) {
+                    hitEnemyId = obj.userData.id;
+                    break;
+                }
                 obj = obj.parent; 
             } 
             
-            if(hitEnemy) { 
+            if(hitEnemyId) { 
                 Sfx.play('hit'); 
                 Gfx.spawnParticles(hits[0].point, 0xff0000, 10, 4); 
                 UI.showHitMarker();
-                UI.feed(`HIT ${State.enemyName}`); 
+                const enemyName = State.players[hitEnemyId].name || "ENEMY";
+                UI.feed(`HIT ${enemyName}`); 
                 
-                State.score.me++;
+                State.scores[State.peerId] = (State.scores[State.peerId] || 0) + 1;
                 UI.updateScore();
                 
-                State.conn.send({ t:'hit' });
+                Net.broadcast({ t:'kill', k: State.peerId, v: hitEnemyId });
+                Net.broadcast({ t:'hit', v: hitEnemyId });
                 
-                if(State.score.me >= CFG.winScore) { 
+                if(State.scores[State.peerId] >= CFG.winScore) { 
                     UI.showEndScreen(true);
-                    State.conn.send({ t:'end', winner: State.myName }); 
+                    Net.broadcast({ t:'end', winner: State.peerId }); 
                 }
             }
         } 
@@ -1541,8 +1804,7 @@ const Logic = {
     },
 
     resetGame: () => {
-        State.score.me = 0;
-        State.score.enemy = 0;
+        for(let pid in State.scores) State.scores[pid] = 0;
         State.gameOver = false;
         State.rematchState = 'IDLE';
         UI.updateScore();
@@ -1600,11 +1862,8 @@ window.onload = () => {
     }; 
     
     window.onmousedown = (e) => { 
-        // Fix for Mouse Lock: If in game and mouse is not locked, try to lock it immediately.
         if (State.playing && !State.gameOver && document.pointerLockElement !== document.body) {
-            // Don't lock if clicking a UI element (modals, end screen, chat input)
             if (e.target.closest('.modal-content') || e.target.closest('.panel') || e.target.closest('#rematch-overlay') || e.target.closest('#chat-input')) return;
-            
             document.body.requestPointerLock();
             return;
         }
@@ -1667,6 +1926,152 @@ window.onload = () => {
         muteBtn.innerText = isMuted ? "UNMUTE MUSIC" : "MUTE MUSIC";
         muteBtn.className = isMuted ? "btn-red" : "";
     });
+
+    // --- LOBBY & NAVIGATION ---
+    document.getElementById('btn-host').onclick = () => Net.init('host'); 
+    document.getElementById('btn-join-code').onclick = () => UI.showPanel('panel-join');
+    document.getElementById('btn-join-public').onclick = () => UI.showPanel('panel-browse');
+    document.getElementById('btn-back-browse').onclick = () => UI.showPanel('panel-main');
+
+    document.getElementById('btn-connect').onclick = () => { 
+        const code = document.getElementById('inp-code').value.trim();
+        if(!code) return UI.toast("ENTER ROOM CODE", "error");
+        if(!State.peer) {
+             UI.toast("Initializing Network...", "info");
+             Net.init('client');
+             State.pendingConnection = code;
+        } else {
+             State.pendingConnection = code;
+             const conn = State.peer.connect(code);
+             Net.handleConnection(conn);
+        }
+    }; 
+    
+    // --- BROWSE LOBBIES LOGIC ---
+    document.getElementById('btn-refresh-rooms').onclick = () => {
+        const container = document.getElementById('public-rooms-container');
+        container.innerHTML = '<div style="padding:10px;text-align:center;color:#888;"><i class="fas fa-spinner fa-spin"></i> SCANNING NETWORK...</div>';
+        
+        let requestCompleted = false;
+
+        // TIMEOUT HANDLER: If PeerJS server hangs, clear loading after 5 seconds
+        const timeoutId = setTimeout(() => {
+            if(!requestCompleted) {
+                requestCompleted = true;
+                container.innerHTML = `
+                    <div style="padding:10px;text-align:center;color:#ff9d00">
+                        <i class="fas fa-exclamation-triangle"></i> SERVER TIMEOUT
+                    </div>
+                    <div style="padding:0 10px 10px;text-align:center;color:#666;font-size:0.7rem;">
+                        The public PeerJS server is busy or blocking requests.<br>
+                        Please use "JOIN BY CODE" for a reliable connection.
+                    </div>
+                `;
+            }
+        }, 5000);
+
+        if(!State.peer) {
+            // We need a peer object to query the server
+            State.peer = new Peer();
+            State.peer.on('open', () => {
+                performListAllPeers();
+            });
+            State.peer.on('error', (err) => {
+                clearTimeout(timeoutId);
+                requestCompleted = true;
+                container.innerHTML = `<div style="padding:10px;text-align:center;color:red">PEERJS ERROR: ${err.type}</div>`;
+            });
+        } else {
+            performListAllPeers();
+        }
+
+        function performListAllPeers() {
+            State.peer.listAllPeers((peers) => {
+                clearTimeout(timeoutId);
+                if(requestCompleted) return;
+                requestCompleted = true;
+
+                container.innerHTML = '';
+                if(peers.length === 0) {
+                    container.innerHTML = '<div style="padding:10px;text-align:center;">No public lobbies found right now.</div>';
+                    return;
+                }
+                
+                // Randomize list slightly so top isn't always same
+                peers.sort(() => Math.random() - 0.5);
+
+                peers.forEach(id => {
+                    const div = document.createElement('div');
+                    div.className = 'room-item';
+                    div.innerHTML = `
+                        <div class="room-info">
+                            <span class="room-name">${id.substring(0, 18)}...</span>
+                            <span class="room-meta">Public Lobby</span>
+                        </div>
+                        <i class="fas fa-play"></i>
+                    `;
+                    div.onclick = () => {
+                        // Copy code to clipboard and prompt user
+                        navigator.clipboard.writeText(id).then(() => {
+                            UI.toast("CODE COPIED. PASTE IT IN JOIN TAB.", "success");
+                            setTimeout(() => {
+                                UI.showPanel('panel-join');
+                                document.getElementById('inp-code').value = id;
+                                document.getElementById('btn-connect').click();
+                            }, 1000);
+                        });
+                    };
+                    container.appendChild(div);
+                });
+            }, (err) => {
+                clearTimeout(timeoutId);
+                if(requestCompleted) return;
+                requestCompleted = true;
+                container.innerHTML = `
+                    <div style="padding:10px;text-align:center;color:#ff9d00">
+                        <i class="fas fa-exclamation-triangle"></i> SCAN FAILED
+                    </div>
+                    <div style="padding:0 10px 10px;text-align:center;color:#666;font-size:0.7rem;">
+                        Server blocked the request (CORS/Rate Limit).<br>
+                        Use "JOIN BY CODE".
+                    </div>
+                `;
+            });
+        }
+    };
+    
+    document.getElementById('btn-start').onclick = () => { 
+        if(Object.keys(State.connections).length > 0) { 
+            CFG.winScore = parseInt(document.getElementById('inp-win-score').value) || 30;
+            Net.broadcast({ t:'start', ws: CFG.winScore }); 
+            UI.startGame(); 
+        } else {
+            UI.toast("NEED AT LEAST 1 PLAYER", "error");
+        }
+    }; 
+    
+    document.getElementById('host-code').onclick = (e) => { 
+        navigator.clipboard.writeText(e.target.value).then(() => UI.toast("ROOM CODE COPIED"));
+    }; 
+    
+    document.getElementById('btn-back').onclick = () => location.reload(); 
+    document.getElementById('btn-back-2').onclick = () => UI.showPanel('panel-main'); 
+
+    document.getElementById('btn-end-rematch').onclick = () => {
+        UI.requestRematch();
+    };
+
+    document.getElementById('btn-end-exit').onclick = () => {
+        location.reload();
+    };
+
+    document.getElementById('btn-accept').onclick = () => {
+        UI.acceptRematch();
+    };
+
+    document.getElementById('btn-decline').onclick = () => {
+        UI.declineRematch();
+    };
 
     // --- MOBILE CONTROLS ---
     const joystick = document.getElementById('joystick-area');
@@ -1797,42 +2202,6 @@ window.onload = () => {
             document.getElementById('crosshair').style.display = 'block'; 
         }
     });
-
-    // --- REMATCH & LOBBY EVENTS ---
-    document.getElementById('btn-host').onclick = () => Net.init('host'); 
-    document.getElementById('btn-join').onclick = () => UI.showPanel('panel-join'); 
-    document.getElementById('btn-connect').onclick = () => Net.init('client'); 
-    
-    document.getElementById('btn-start').onclick = () => { 
-        if(State.conn) { 
-            CFG.winScore = parseInt(document.getElementById('inp-win-score').value) || 30;
-            State.conn.send({ t:'start', ws: CFG.winScore }); 
-            UI.startGame(); 
-        } 
-    }; 
-    
-    document.getElementById('host-code').onclick = (e) => { 
-        navigator.clipboard.writeText(e.target.value).then(() => UI.toast("ROOM CODE COPIED"));
-    }; 
-    
-    document.getElementById('btn-back').onclick = () => location.reload(); 
-    document.getElementById('btn-back-2').onclick = () => UI.showPanel('panel-main'); 
-
-    document.getElementById('btn-end-rematch').onclick = () => {
-        UI.requestRematch();
-    };
-
-    document.getElementById('btn-end-exit').onclick = () => {
-        location.reload();
-    };
-
-    document.getElementById('btn-accept').onclick = () => {
-        UI.acceptRematch();
-    };
-
-    document.getElementById('btn-decline').onclick = () => {
-        UI.declineRematch();
-    };
 }; 
 
 </script>
