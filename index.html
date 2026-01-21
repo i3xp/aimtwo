@@ -862,6 +862,9 @@ const Net = {
                     State.score.enemy = data.v;
                     UI.updateScore();
                     break;
+                case 'die': // FIX: Added packet to handle death
+                    Logic.die();
+                    break;
                 case 'end': 
                     Logic.endGame(false); 
                     break;
@@ -1226,6 +1229,9 @@ const Logic = {
                 State.score.me++;
                 UI.updateScore();
                 State.conn.send({ t:'score_update', v: State.score.me });
+                
+                // FIX: Send death packet to enemy
+                State.conn.send({ t:'die' });
             }
         } 
     }, 
