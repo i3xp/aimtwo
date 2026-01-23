@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MSWBNKLB');</script>
+<!-- End Google Tag Manager -->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>AIM2: SNIPER OPS - Free 3D Browser Multiplayer Shooter</title>
+    <meta name="description" content="Engage in tactical 3D sniper warfare with AIM2: SNIPER OPS. A free browser-based multiplayer FPS featuring mobile support, private lobbies, and real-time combat. No download required.">
+    <meta name="keywords" content="sniper game, 3d shooter, browser game, multiplayer fps, webgl, tactical ops, first person shooter, no download, mobile game, peer to peer">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://i3xp.github.io/aimtwo/">
+    <meta property="og:title" content="AIM2: SNIPER OPS - 3D Multiplayer game in your browser!">
+    <meta property="og:description" content="Enter arena. Host matches, scope targets, and eliminate enemies in this fast-paced 3D browser sniper game. Play on Mobile or PC now.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/i3xp/aimtwo/refs/heads/main/aimtwo%20logo.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AIM2: SNIPER OPS - 3D Multiplayer game in your browser!">
+    <meta name="twitter:description" content="Enter the arena. Host matches, scope targets, and eliminate enemies in this fast-paced 3D browser sniper game.">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/i3xp/aimtwo/refs/heads/main/aimtwo%20logo.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Rubik:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MSWBNKLB"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+    <audio id="lobby-audio" loop>
+        <source src="https://github.com/i3xp/aimtwo/raw/refs/heads/main/aimtwo_lobby_song.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-death" src="https://raw.githubusercontent.com/i3xp/aimtwo/main/death.mp3" preload="auto"></audio>
+    <audio id="sfx-headshot" src="https://raw.githubusercontent.com/i3xp/aimtwo/main/headshot_1.mp3" preload="auto"></audio>
+    <audio id="sfx-bodyshot" src="https://raw.githubusercontent.com/i3xp/aimtwo/main/bodyshot.mp3" preload="auto"></audio>
+    <audio id="sfx-firing" src="https://raw.githubusercontent.com/i3xp/aimtwo/main/firing.mp3" preload="auto"></audio>
+
+    <div id="game-layer"></div>
+
+    <div id="ui-layer">
+        <div id="hud">
+            <div class="hud-top-bar">
+                <div id="p1-card" class="score-card">
+                    <div class="score-label">YOU</div>
+                    <div id="score-p1-val" class="score-val">0</div>
+                </div>
+
+                <div id="timer-box">05:00</div>
+
+                <div id="p2-card" class="score-card">
+                    <div class="score-label">ENEMY</div>
+                    <div id="score-p2-val" class="score-val">0</div>
+                </div>
+            </div>
+
+            <div id="killfeed">ELIMINATED</div>
+
+            <div id="ammo-hud">
+                <div id="reloading-text">RELOADING...</div>
+                <div id="ammo-count"><i class="fas fa-bolt" id="ammo-icon"></i><span id="ammo-val">5</span></div>
+            </div>
+
+            <div id="crosshair">
+                <div class="ch_dot"></div>
+            </div>
+
+            <div id="hitmarker">
+                <div class="hm_line hm_1"></div>
+                <div class="hm_line hm_2"></div>
+            </div>
+
+            <div id="scope">
+                <div class="scope-overlay"></div>
+                <div class="scope-line sl-v"></div>
+                <div class="scope-line sl-h"></div>
+                <div class="scope-dot"></div>
+            </div>
+
+            <div id="chat-container">
+                <div id="chat-messages"></div>
+                <div id="chat-input-wrapper">
+                    <input type="text" id="chat-input" placeholder="Type message..." maxlength="100">
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-controls">
+            <div id="joystick-area">
+                <div id="joystick-knob"></div>
+            </div>
+            <div id="sprint-toggle">SPRINT</div>
+            <div id="scope-btn"><i class="fas fa-crosshairs"></i></div>
+        </div>
+
+        <div id="rematch-overlay">
+            <div class="end-card">
+                <h2 id="end-title">VICTORY</h2>
+                <div style="color:#666; margin-bottom:20px; font-weight:bold;">MATCH FINISHED</div>
+
+                <div class="score-result-row">
+                    <span>YOUR KILLS</span>
+                    <span id="end-score-me">0</span>
+                </div>
+                <div class="score-result-row">
+                    <span>ENEMY KILLS</span>
+                    <span id="end-score-enemy">0</span>
+                </div>
+
+                <div class="end-actions">
+                    <button id="btn-end-rematch" class="btn-blue">PLAY AGAIN</button>
+                    <button id="btn-end-exit" style="background:#eee; color:#333; border-bottom:4px solid #ccc;">EXIT TO LOBBY</button>
+                </div>
+
+                <div id="accept-decline-container" style="display:none; margin-top:15px;">
+                    <div style="color:#333; margin-bottom:10px; font-weight:bold;">OPPONENT WANTS REMATCH</div>
+                    <div style="display:flex; gap:10px;">
+                        <button id="btn-accept" style="background:#2ecc71; color:white; border-bottom:4px solid #27ae60;">ACCEPT</button>
+                        <button id="btn-decline" class="btn-red">DECLINE</button>
+                    </div>
+                </div>
+                <div id="rematch-status-msg" style="margin-top:10px; color:#888; font-size:0.9rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div id="menu-layer">
+        <div id="settings-btn"><i class="fas fa-cog"></i></div>
+
+        <div id="autoplay-warning" class="modal-overlay">
+            <div class="modal-content">
+                <h2 style="color:var(--danger)">AUDIO BLOCKED</h2>
+                <p style="color:#555; margin-bottom:20px;">Browser blocked autoplay.</p>
+                <button id="btn-close-warning" class="btn-blue">OKAY</button>
+            </div>
+        </div>
+
+        <div id="settings-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h2>SETTINGS</h2>
+                <div class="slider-container">
+                    <div class="slider-row">
+                        <span>MUSIC</span>
+                        <input type="range" id="vol-lobby" min="0" max="1" step="0.01" value="0.5">
+                    </div>
+                    <div class="slider-row">
+                        <span>SFX</span>
+                        <input type="range" id="vol-match" min="0" max="1" step="0.01" value="0.8">
+                    </div>
+                    <div class="slider-row">
+                        <span>STEPS</span>
+                        <input type="range" id="vol-walk" min="0" max="1" step="0.01" value="0.8">
+                    </div>
+                </div>
+                <button id="btn-close-settings" class="btn-red">CLOSE</button>
+            </div>
+        </div>
+
+        <div id="panel-main" class="panel">
+            <h1>AIM TWO</h1>
+            <div style="margin-bottom:20px; color:#666; font-weight:bold;">MULTIPLAYER SNIPER ARENA</div>
+            <input type="text" id="inp-name" placeholder="NICKNAME" maxlength="12">
+            <button id="btn-host" class="btn-blue"><i class="fas fa-plus icon"></i>CREATE MATCH</button>
+            <button id="btn-join"><i class="fas fa-gamepad icon"></i>JOIN MATCH</button>
+
+            <div class="footer">
+                Join <a href="https://discord.gg/ZCG4hB2HHp" target="_blank">Discord</a>
+            </div>
+        </div>
+
+        <div id="panel-lobby" class="panel hidden">
+            <h2>LOBBY</h2>
+            <div style="margin-bottom:5px; color:#888; font-size:0.8rem; font-weight:bold;">ROOM CODE</div>
+            <input type="text" id="lobby-code" readonly>
+
+            <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 8px; border: 1px solid #eee;">
+                <div style="font-size:0.9rem; color:#333; margin-bottom:5px; font-weight:bold;">PLAYERS</div>
+                <div id="lobby-list" style="text-align:left; padding-left: 10px;">
+                    <div id="lobby-p1" style="color:var(--primary); font-weight:bold;">HOST</div>
+                    <div id="lobby-p2" style="color:#999; margin-top:5px;">WAITING...</div>
+                </div>
+            </div>
+
+            <div style="margin-bottom:20px; color:#555; font-size:0.9rem;">
+                <i class="fas fa-clock"></i> MATCH TIME: <b>5 MINUTES</b>
+            </div>
+
+            <button id="btn-start-lobby" class="btn-blue" disabled>START GAME</button>
+            <button id="btn-leave" class="btn-red">LEAVE</button>
+        </div>
+
+        <div id="panel-join" class="panel hidden">
+            <h2>JOIN GAME</h2>
+            <input type="text" id="inp-code" placeholder="PASTE ROOM CODE">
+            <button id="btn-connect" class="btn-blue">CONNECT</button>
+            <div id="client-status" style="margin-top:15px; color:#888; font-size:0.8rem; min-height:20px;"></div>
+            <button id="btn-back-2" class="btn-red">BACK</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
